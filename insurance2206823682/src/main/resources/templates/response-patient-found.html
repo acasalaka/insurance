@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Found</title>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container" style="margin-top: 50px;">
+        <div class="row justify-content-center">
+            <div class="text-center my-4">
+                <h2>Patient Found</h2>
+            </div>
+            <div class="card" style="width: 500px;">
+                <div class="card-body">
+                    <!-- Patient Info Table -->
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <th scope="row">NIK</th>
+                                <td th:text="': ' + ${patient.nik}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Name</th>
+                                <td th:text="': ' + ${patient.name}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Gender</th>
+                                <td th:text="': ' + (${patient.gender == 0 ? 'Male' : 'Female'})"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date of Birth</th>
+                                <td th:text="': ' + ${#dates.format(patient.birthDate, 'MMMM dd, yyyy')}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td th:text="'  ' + ${yearMonthDay}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Class</th>
+                                <td th:text="': ' + ${patient.pClass}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Insurance Limit</th>
+                                <td th:text="': ' + ${insuranceLimit}"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row"></th>
+                                <td>
+                                    <button style="background-color: #f4c542; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">Upgrade Class</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <!-- Back and Continue Buttons Centered -->
+                    <div class="d-flex justify-content-center mt-4">
+                        <a href="/policy/all" class="btn btn-secondary me-3">Back</a>
+                        <a th:href="@{/policy/{nik}/create(nik=${patient.nik})}" class="btn btn-primary">Continue</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

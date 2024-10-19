@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <title>Policy Limit Exceeded</title>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container">
+        <div class="card m-4 p-4">
+            <div class="card-body">
+                <div class="text-center">
+                    <h2>New Policy Total Coverage Exceeds Patient Available Limit</h2>
+                </div>
+
+                <div class="text-center mt-4 mb-4">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <p>Patient Available Limit: <strong th:text="${patientLimit}"></strong></p>
+                            <p>Company Total Coverage: <strong th:text="${companyCoverage}"></strong></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mb-3">
+                    <p>Please upgrade Patient class or choose another suitable Company.</p>
+                </div>
+
+                <div class="text-center d-flex justify-content-around mt-4">
+                    <a type="button" class="btn btn-md btn-secondary" href="/policy/all">Back</a>
+                    <a type="button" class="btn btn-md btn-primary" href="BLOM">Upgrade Class</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

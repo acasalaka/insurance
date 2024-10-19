@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Update Company</title>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container">
+        <div class="text-center my-4">
+            <h2>Update Company</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="card" style="width: 60rem;">
+                <div class="card-body">
+                    <form th:action="@{/company/update}" th:object="${companyDTO}" method="POST">
+                            <input class="form-control" type="hidden" th:field="*{id}" th:value="*{id}"/>
+
+                        <!-- Company Data Section -->
+                        <h5 class="fw-bold">Company Data</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group my-2">
+                                    <label for="name">Name</label>
+                                    <input class="form-control" type="text" id="name" th:field="*{name}"
+                                        placeholder="Name" />
+                                    <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group my-2">
+                                    <label for="email">Email</label>
+                                    <input class="form-control" type="email" id="email" th:field="*{email}"
+                                        placeholder="Email" />
+                                    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group my-2">
+                                    <label for="contact">Contact</label>
+                                    <input class="form-control" type="text" id="contact" th:field="*{contact}"
+                                        placeholder="+62" />
+                                    <div class="error" th:if="${#fields.hasErrors('contact')}" th:errors="*{contact}"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group my-2">
+                                    <label for="address">Address</label>
+                                    <input class="form-control" type="text" id="address" th:field="*{address}"
+                                        placeholder="Address" />
+                                    <div class="error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coverage Data Section -->
+                        <h5 class="fw-bold mt-4">Coverage Data</h5>
+                        <div class="row mb-2 align-items-center">
+                            <div class="col-md-6">
+                                <label for="coverage">Coverage - Coverage Amount</label>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-primary" name="addRow">Add Coverage</button>
+                            </div>
+                        </div>
+
+                        <div th:each="coverageItem, iterationStatus : *{listCoverage}">
+                            <div class="row mb-2">
+                                <!-- Coverage Dropdown -->
+                                <div class="col-md-10">
+                                    <select th:field="*{listCoverage[__${iterationStatus.index}__].id}"
+                                        class="form-control">
+                                        <option th:each="coverage : ${listCoverageExisting}"
+                                            th:value="${coverage.id}"
+                                            th:data-coverage-amount="${coverage.coverageAmount}"
+                                            th:text="${coverage.name + ' - ' + coverage.formattedCoverageAmount}">
+                                        </option>
+                                    </select>
+                                    <div class="error" th:if="${#fields.hasErrors('listCoverage[' + iterationStatus.index + '].id')}"
+                                        th:errors="*{listCoverage[__${iterationStatus.index}__].id}"></div>
+                                </div>
+                                <!-- Delete Button -->
+                                <div class="col-md-2 text-end">
+                                    <button th:value="${iterationStatus.index}" class="btn btn-danger" type="submit"
+                                        name="deleteRow">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Total Coverage Section -->
+                        <div class="row mt-3">
+                            <div class="col-md-8">
+                                <p class="fw-bold">Total Coverage: Rp<span id="totalCoverage">0,00</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Submit and Cancel Buttons -->
+                        <div class="text-center m-3">
+                            <a class="btn btn-danger" th:href="@{/company/{id}(id=${companyDTO.id})}" role="button">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function updateTotalCoverage() {
+                let totalCoverage = 0;
+                // Loop through all coverage dropdowns
+                document.querySelectorAll('select').forEach(function(select) {
+                    // Get selected option's data-coverage-amount attribute
+                    let selectedOption = select.options[select.selectedIndex];
+                    let coverageAmount = parseFloat(selectedOption.getAttribute('data-coverage-amount') || 0);
+                    totalCoverage += coverageAmount;
+                });
+                
+                // Update the total coverage text
+                document.getElementById('totalCoverage').innerText = totalCoverage.toLocaleString('id-ID', {
+                    minimumFractionDigits: 2
+                });
+            }
+
+            // Attach event listeners to all coverage dropdowns
+            document.querySelectorAll('select').forEach(function(select) {
+                select.addEventListener('change', updateTotalCoverage);
+            });
+
+            // Update the total coverage on page load
+            updateTotalCoverage();
+            
+        });
+    </script>
+
+</body>
+
+</html>

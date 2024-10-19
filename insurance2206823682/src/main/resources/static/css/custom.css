@@ -1,0 +1,129 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+table.dataTable {
+    font-family: 'Poppins', sans-serif;
+}
+
+.error {
+    color: red;
+    font-size: 0.875em;
+    margin-top: 0.5rem;
+}
+
+.custom-navbar {
+    background: linear-gradient(90deg, rgba(123, 67, 151, 1) 0%, rgba(180, 71, 227, 1) 100%);
+    padding: 15px;
+}
+
+.custom-navbar .navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.custom-navbar .nav-link {
+    font-size: 1.1rem;
+}
+
+/* Home page custom styles */
+.hero-section {
+    display: flex;
+    align-items: center;
+    /* Vertically center the image and text */
+    justify-content: center;
+    /* Horizontally center the content */
+    margin-bottom: 40px;
+    margin-top: 40px;
+    /* Add space between the navbar and hero section */
+}
+
+.hero-logo {
+    width: 100px;
+    margin-right: 20px;
+    /* Space between logo and text */
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.stats {
+    margin-top: 40px;
+}
+
+.stats .card {
+    background-color: #4F8BCB;
+    color: white;
+    border: none;
+    padding: 30px;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stats .card-title {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+/* Style for truncating text in the coverages column */
+.coverage-list {
+    max-width: 250px;
+    /* Set a width for the column */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dataTables_filter {
+    margin-top: 10px;
+    margin-bottom: 20px; /* Add margin below the search input */
+}
+
+.btn-success {
+    margin-bottom: 10px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.3rem 0.5rem;
+    font-size: 14px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #007bff;
+    color: white !important;
+}
+
+/* Styling the header to be purple */
+table.dataTable thead th {
+    background-color: #6c63ff;
+    color: white;
+    text-align: center;
+}
+
+/* Round the far left and far right headers */
+table.dataTable thead th:first-child {
+    border-top-left-radius: 12px;
+}
+
+table.dataTable thead th:last-child {
+    border-top-right-radius: 12px;
+}
+
+/* Add margin between search input and table */
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 20px; /* Margin between search bar and table */
+}
+
+.dataTable tbody td {
+    text-align: center;
+    vertical-align: middle;
+}

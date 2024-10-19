@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org">
+
+
+<head>
+    <meta charset="UTF-8">
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <title>Home</title>
+</head>
+
+
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    <div class="container text-center">
+        <div class="hero-section">
+            <img src="https://via.placeholder.com/100" class="hero-logo" alt="Insurance Logo">
+            <h1 class="title">Insurance System</h1>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="row stats">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div>57</div>
+                        <div class="card-title">Policy</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div>15</div>
+                        <div class="card-title">Company</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div>89</div>
+                        <div class="card-title">Patient</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Include JS -->
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    </div>
+</body>
+
+</html>

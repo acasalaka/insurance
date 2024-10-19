@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Policy</title>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container mt-5"> <!-- Added margin-top class here -->
+        <div class="row justify-content-center">
+            <div class="card" style="width: 60rem;">
+                <div class="card-body">
+                    <h3 class="text-center mb-4">Search Patient</h3>
+                    <form method="POST" action="/policy/create/search-patient">
+                        <div class="form-group mb-3">
+                            <label for="nik" class="mb-2">NIK</label>
+                            <input type="text" class="form-control" id="nik" name="nik" placeholder="Enter Patient's NIK">
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="/policy/all" class="btn btn-secondary mr-2">Back</a>
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

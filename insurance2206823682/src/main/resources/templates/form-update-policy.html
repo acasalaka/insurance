@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Update Policy</title>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+    <style>
+        /* Custom styling for the table and buttons */
+        table.dataTable {
+            border-collapse: collapse;
+            margin: 0 auto;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        table.dataTable tbody tr {
+            text-align: center;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.3rem 0.5rem;
+            font-size: 14px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #6c63ff;
+            color: white !important;
+        }
+
+        .dataTables_length {
+            float: left;
+        }
+
+        .dataTables_filter {
+            float: right;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+
+        .btn {
+            border-radius: 5px;
+        }
+
+        .btn-danger {
+            background-color: #f06565;
+        }
+
+        .btn-primary {
+            background-color: #6c63ff;
+        }
+
+        .text-center {
+            margin-bottom: 1.5rem;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight:normal;
+        }
+
+        .status-badge.created {
+            background-color: #6c63ff;
+            /* Purple for Created */
+        }
+
+        .status-badge.partially-claimed {
+            background-color: #f4c542;
+            /* Yellow for Partially Claimed */
+        }
+
+        .status-badge.fully-claimed {
+            background-color: #4caf50;
+            /* Green for Fully Claimed */
+        }
+
+        .status-badge.expired {
+            background-color: #f06565;
+            /* Red for Expired */
+        }
+
+        .status-badge.cancelled {
+            background-color: #a9a9a9;
+            /* Gray for Cancelled */
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container my-5">
+        <div class="text-center">
+            <h2>Update Policy</h2>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="card" style="width: 60rem;">
+                <div class="card-body">
+                    <form th:action="@{/policy/{id}/update(id=${policy.id})}" th:object="${policyDTO}" method="POST">
+                        <!-- Policy Information Section -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Policy ID:</label>
+                                <span th:text="${policy.id}"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Total Coverage:</label>
+                                <span th:text="'Rp ' + ${#numbers.formatDecimal(policy.totalCoverage, 0, 'POINT', 2, 'COMMA')}"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Patient:</label>
+                                <span th:text="${policy.patient.name}"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Total Covered:</label>
+                                <span th:text="'Rp ' + ${#numbers.formatDecimal(policy.totalCovered, 0, 'POINT', 2, 'COMMA')}"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Company:</label>
+                                <span th:text="${policy.company.name}"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Status:</label>
+                                <span th:if="${policy.status == 0}" class="status-badge created">Created</span>
+                                <span th:if="${policy.status == 1}" class="status-badge partially-claimed">Partially Claimed</span>
+                                <span th:if="${policy.status == 2}" class="status-badge fully-claimed">Fully Claimed</span>
+                                <span th:if="${policy.status == 3}" class="status-badge expired">Expired</span>
+                                <span th:if="${policy.status == 4}" class="status-badge cancelled">Cancelled</span>
+                            </div>                            
+                        </div>
+
+                        <!-- Expiry Date Section -->
+                        <div class="row mb-3 align-items-center">
+                            <label for="expiryDate" class="col-form-label col-md-2">Expiry Date:</label>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control" id="expiryDate" th:field="*{expiryDate}">
+                                <div class="error" th:if="${#fields.hasErrors('expiryDate')}" th:errors="*{expiryDate}"></div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Coverages Section -->
+                        <div class="row mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="coverages" class="form-label mb-0">Coverages</label>
+                                <div th:if="${totalCoverage != null}">
+                                    <p class="form-label mb-0">Total Coverage: <span th:text="${totalCoverage}"></span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coverage Table -->
+                        <div class="row mb-3" th:if="${listCoverage != null}">
+                            <table id="coverageTable" class="display" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Coverage</th>
+                                        <th>Coverage Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="coverage, stat : ${listCoverage}">
+                                        <td th:text="${stat.index + 1}"></td>
+                                        <td th:text="${coverage.name}"></td>
+                                        <td th:text="'Rp ' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Submit and Cancel Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="#" class="btn btn-danger">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#coverageTable').DataTable({
+                "paging": true,
+                "lengthMenu": [3, 5, 10],
+                "searching": true,
+                "info": true
+            });
+        });
+    </script>
+</body>
+
+</html>

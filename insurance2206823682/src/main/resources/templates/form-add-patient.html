@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Patient & Policy</title>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+    <style>
+
+        table.dataTable {
+            border-collapse: collapse;
+            margin: 0 auto;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        table.dataTable tbody tr {
+            text-align: center;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.3rem 0.5rem;
+            font-size: 14px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #6c63ff;
+            color: white !important;
+        }
+
+        .dataTables_length {
+            float: left;
+        }
+
+        .dataTables_filter {
+            float: right;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+    <div class="container">
+        <div class="text-center my-4">
+            <h2>New Patient & Policy</h2>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="card" style="width: 60rem;">
+                <div class="card-body">
+                    <form th:action="@{/policy/create-with-patient}" th:object="${patientDTO}" method="POST">
+                        
+                        <!-- Patient Info -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Name" th:field="*{name}">
+                                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="nik" class="form-label">NIK</label>
+                                <input type="text" class="form-control" id="nik" placeholder="NIK" th:field="*{nik}">
+                                <div class="error" th:if="${#fields.hasErrors('nik')}" th:errors="*{nik}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="Email" th:field="*{email}">
+                                <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="gender" class="form-label">Gender</label><br>
+                                <!-- Add margin between the radio buttons -->
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="male" name="gender" th:field="*{gender}" value="0">
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="female" name="gender" th:field="*{gender}" value="1">
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                                <div class="error" th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="birthDate" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="birthDate" th:field="*{birthDate}">
+                                <div class="error" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="pClass" class="form-label">Insurance Class</label>
+                                <select class="form-control" id="pClass" th:field="*{pClass}">
+                                    <option value="1">Class 1 - Limit: Rp50,000,000.00</option>
+                                    <option value="2">Class 2 - Limit: Rp35,000,000.00</option>
+                                    <option value="3">Class 3 - Limit: Rp25,000,000.00</option>
+                                </select>
+                                <div class="error" th:if="${#fields.hasErrors('pClass')}" th:errors="*{pClass}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="expiryDate" class="form-label">Expiry Date</label>
+                                <input type="date" class="form-control" id="expiryDate" th:field="*{expiryDate}">
+                                <div class="error" th:if="${#fields.hasErrors('expiryDate')}" th:errors="*{expiryDate}"></div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Company and Coverage Info -->
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <label for="company" class="form-label">Company</label>
+                                <select id="companySelect" th:field="*{company.id}" class="form-control">
+                                    <option value="" disabled selected>Select Insurance Company</option>
+                                    <option th:each="companyItem : ${listCompany}" th:value="${companyItem.id}" th:text="${companyItem.name}">
+                                    </option>
+                                </select>
+                                <div class="error" th:if="${#fields.hasErrors('company.id')}" th:errors="*{company.id}"></div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" name="viewCoverage" class="btn btn-primary w-100">Load Coverage</button>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Total Coverage -->
+                        <div class="row mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="coverages" class="form-label mb-0">Coverages</label>
+                                <div th:if="${totalCoverage != null}">
+                                    <p class="form-label mb-0">Total Coverage: <span th:text="${totalCoverage}"></span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coverage Table -->
+                        <div class="row mb-3" th:if="${listCoverage != null}">
+                            <table id="coverageTable" class="display" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Coverage</th>
+                                        <th>Coverage Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="coverage, stat : ${listCoverage}">
+                                        <td th:text="${stat.index + 1}"></td>
+                                        <td th:text="${coverage.name}"></td>
+                                        <td th:text="'Rp ' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Submit and Cancel Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="#" class="btn btn-danger">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#coverageTable').DataTable({
+                "paging": true,
+                "lengthMenu": [3, 5, 10],
+                "searching": true,
+                "info": true
+            });
+        });
+    </script>
+</body>
+
+</html>
