@@ -34,7 +34,7 @@
 
                 <div class="text-center d-flex justify-content-around mt-4">
                     <a type="button" class="btn btn-md btn-secondary" href="/policy/all">Back</a>
-                    <a type="button" class="btn btn-md btn-primary" href="BLOM">Upgrade Class</a>
+                    <a type="button" class="btn btn-md btn-primary" th:href="@{/patient/{id}/upgrade-class(id=${patient.id})}">Upgrade Class</a>
                 </div>
             </div>
         </div>

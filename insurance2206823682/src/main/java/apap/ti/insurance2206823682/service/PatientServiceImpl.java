@@ -5,6 +5,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,16 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public Patient getPatientById(UUID id) {
+        for (Patient patient : gettAllPatient()) {
+            if (patient.getId().equals(id)) {
+                return patient;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Patient addPatient(Patient patient) {
         return patientDb.save(patient);
     }
@@ -54,7 +65,9 @@ public class PatientServiceImpl implements PatientService {
     public long getAvailableLimit(Patient patient) {
         long totalCoveragePolicy = 0;
         for (Policy policy : patient.getListPolicy()) {
-            totalCoveragePolicy += policy.getTotalCoverage();
+            if (policy.getStatus() != 4){
+                totalCoveragePolicy += policy.getTotalCoverage();
+            }
         }
         return (getInitialLimit(patient) - totalCoveragePolicy);
     }
@@ -101,8 +114,21 @@ public class PatientServiceImpl implements PatientService {
             getPatient.setBirthDate(patient.getBirthDate());
             getPatient.setEmail(patient.getEmail());
             getPatient.setPClass(patient.getPClass());
-            patient.setListPolicy(patient.getListPolicy());
+            getPatient.setListPolicy(patient.getListPolicy());
+            getPatient.setUpdatedAt(new Date());
 
+            patientDb.save(getPatient);
+            return getPatient;
+        }
+        return null;
+    }
+
+    @Override
+    public Patient updateClassPatient(Patient patient){
+        Patient getPatient = getPatientByNIK(patient.getNik());
+        if (getPatient != null) {
+            getPatient.setPClass(patient.getPClass());
+            getPatient.setUpdatedAt(new Date());
             patientDb.save(getPatient);
             return getPatient;
         }

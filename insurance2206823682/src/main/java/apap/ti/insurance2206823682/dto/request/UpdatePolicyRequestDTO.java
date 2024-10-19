@@ -13,10 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class UpdatePolicyRequestDTO {
-    
     @NotNull(message = "Tanggal expired tidak boleh kosong")
     @DateTimeFormat(pattern = "yyyy-MM-dd")    
     private Date expiryDate;
 
-    
+    private String id;
 }

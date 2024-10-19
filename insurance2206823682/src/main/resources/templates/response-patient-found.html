@@ -52,7 +52,11 @@
                             <tr>
                                 <th scope="row"></th>
                                 <td>
-                                    <button style="background-color: #f4c542; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">Upgrade Class</button>
+                                    <a th:href="@{/patient/{id}/upgrade-class(id=${patient.id})}" style="text-decoration: none;">
+                                        <button style="background-color: #f4c542; color: white; border: none; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer;">
+                                            Upgrade Class
+                                        </button>
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>

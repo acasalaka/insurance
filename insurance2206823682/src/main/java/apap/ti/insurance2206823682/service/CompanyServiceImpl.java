@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import apap.ti.insurance2206823682.model.Company;
 import apap.ti.insurance2206823682.model.Coverage;
+import apap.ti.insurance2206823682.model.Policy;
 import apap.ti.insurance2206823682.repository.CompanyDb;
 
 @Service
@@ -104,7 +105,13 @@ public class CompanyServiceImpl implements CompanyService {
         companyDb.save(company);
     }
 
-
-
-
+    @Override
+    public boolean checkCanDeleteCompany(Company company){
+        for (Policy policy : company.getListPolicy()){
+            if (policy.getStatus() != 4){
+                return false;
+            }
+        }
+        return true;
+    }
 }

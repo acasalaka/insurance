@@ -165,8 +165,8 @@ public class CompanyController {
         companyFromDTO.setAddress(companyDTO.getAddress());
         companyFromDTO.setListCoverage(companyDTO.getListCoverage());
 
-        System.out.println("ini print");
-        System.out.println(companyDTO.getId());
+        // System.out.println("ini print");
+        // System.out.println(companyDTO.getId());
 
         companyService.updateCompany(companyFromDTO);
 
@@ -207,8 +207,12 @@ public class CompanyController {
     @GetMapping("/company/{id}/delete")
     public String deleteCompany(@PathVariable("id") UUID id, Model model) {
         var company = companyService.getCompanyById(id);
+        if (!companyService.checkCanDeleteCompany(company)){
+            model.addAttribute("responseMessage", String.format("Tidak dapat menghapus Data Company %s", company.getName()));
+            return "response-company";
+        }
+    
         companyService.deleteCompany(company);
-
         model.addAttribute("responseMessage", String.format("Berhasil menghapus Data Company %s", company.getName()));
 
         return "response-company";

@@ -4,6 +4,7 @@ import apap.ti.insurance2206823682.model.Patient;
 import apap.ti.insurance2206823682.model.Policy;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public interface PatientService {
@@ -14,4 +15,6 @@ public interface PatientService {
     long getAvailableLimit(Patient patient);
     String getYearMonthDaysFromBirthDate(Patient patient);
     Patient updatePatient(Patient patient);
+    Patient getPatientById(UUID id);
+    Patient updateClassPatient(Patient patient);
 }

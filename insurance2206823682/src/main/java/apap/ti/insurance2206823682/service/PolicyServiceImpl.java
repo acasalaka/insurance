@@ -1,9 +1,11 @@
 package apap.ti.insurance2206823682.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import apap.ti.insurance2206823682.model.Company;
@@ -12,6 +14,7 @@ import apap.ti.insurance2206823682.model.Policy;
 import apap.ti.insurance2206823682.repository.CompanyDb;
 import apap.ti.insurance2206823682.repository.PatientDb;
 import apap.ti.insurance2206823682.repository.PolicyDb;
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class PolicyServiceImpl implements PolicyService {
@@ -62,27 +65,94 @@ public class PolicyServiceImpl implements PolicyService {
     @Override
     public List<Policy> getFilteredPolicies(Integer status, Long minCoverage, Long maxCoverage) {
         // Jika status, minCoverage, dan maxCoverage semuanya diisi
+        List<Policy> result;
         if (status != null && minCoverage != null && maxCoverage != null) {
-            return policyDb.findByStatusAndTotalCoverageBetween(status, minCoverage, maxCoverage);
+            result = policyDb.findByStatusAndTotalCoverageBetween(status, minCoverage, maxCoverage);
         } else if (status != null) {
-            return policyDb.findByStatus(status);
+            result = policyDb.findByStatus(status);
         } else if (minCoverage != null && maxCoverage != null) {
-            return policyDb.findByTotalCoverageBetween(minCoverage, maxCoverage);
+            result = policyDb.findByTotalCoverageBetween(minCoverage, maxCoverage);
         } else {
-            return policyDb.findAll();
+            result = policyDb.findAll();
+        }
+        return updateStatusListPoliciesAndGetNotCancelled(result);
+    }
+
+    @Override
+    public List<Policy> updateStatusListPoliciesAndGetNotCancelled(List<Policy> listPolicies){
+        List<Policy> result = new ArrayList<>();
+        for (Policy policy : listPolicies){
+            if (policy.getStatus() != 4){
+                policy = updateStatusPolicy(policy);
+                result.add(policy);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Policy getPolicyById(String id) {
+        for (Policy policy : policyDb.findAll()) {
+            if (policy.getId().equals(id)) {
+                return updateStatusPolicy(policy);
+            }
+        }
+        return null;
+    }
+    
+
+    @Override
+    public Policy updatePolicy(Policy policy) {
+        Policy getPolicy = getPolicyById(policy.getId());
+        if (getPolicy != null) {
+            getPolicy.setExpiryDate(policy.getExpiryDate());
+            Date today = new Date();
+            if (getPolicy.getExpiryDate().before(today) && getPolicy.getStatus() != 3 && getPolicy.getStatus() != 2) {
+                getPolicy.setStatus(3); // 3 is the status for "Expired"
+            }
+            getPolicy.setUpdatedAt(today);
+
+            policyDb.save(getPolicy);
+            return getPolicy;
+        }
+        return null;
+    }
+
+    @Override
+    @PostConstruct
+    public void initialCheckForExpiredPolicies() {
+        checkAndUpdateExpiredPolicies();
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 0 * * ?") // Runs every day at midnight
+    public void checkAndUpdateExpiredPolicies() {
+        List<Policy> allPolicies = policyDb.findAll();
+        Date today = new Date();
+
+        for (Policy policy : allPolicies) {
+            if (policy.getExpiryDate().before(today) && policy.getStatus() != 3 && policy.getStatus() != 2) {
+                policy.setStatus(3); // 3 is the status for "Expired"
+                policyDb.save(policy);
+            }
         }
     }
 
     @Override
-    public Policy getPolicyById(String id){
-        for (Policy policy: policyDb.findAll()) {
-            if (policy.getId().equals(id)) {
-                return policy;
-            }
+    public Policy updateStatusPolicy(Policy policy){
+        if (policy.getTotalCovered() > 0 && policy.getTotalCovered() != policy.getTotalCoverage()){
+            policy.setStatus(1);
+            policyDb.save(policy);
+        } else if (policy.getTotalCovered() == policy.getTotalCoverage()){
+            policy.setStatus(2);
+            policyDb.save(policy);
         }
-        return null;
+        return policy;
+    }
 
-
-
+    @Override
+    public void deletePolicy(Policy policy){
+        policy.setStatus(4);
+        policyDb.save(policy);
     }
 }

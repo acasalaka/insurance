@@ -19,6 +19,7 @@ import apap.ti.insurance2206823682.dto.request.AddCompanyRequestDTO;
 import apap.ti.insurance2206823682.dto.request.AddPatientPolicyRequestDTO;
 import apap.ti.insurance2206823682.dto.request.AddPolicyRequestDTO;
 import apap.ti.insurance2206823682.dto.request.UpdatePolicyRequestDTO;
+import apap.ti.insurance2206823682.dto.request.UpgradePatientRequestDTO;
 import apap.ti.insurance2206823682.model.Company;
 import apap.ti.insurance2206823682.model.Coverage;
 import apap.ti.insurance2206823682.model.Patient;
@@ -247,7 +248,15 @@ public class PolicyController {
 
             model.addAttribute("patientLimit", formatedLimit);
             model.addAttribute("companyCoverage", formattedCoverage);
+            model.addAttribute("patient", searchedPatient);
             return "response-policy-unsuccessful";
+        }
+
+        for (Policy policyItem : searchedPatient.getListPolicy()){
+            if (policyItem.getCompany().getId().equals(companyFound.getId())){
+                model.addAttribute("responseMessage", String.format("Gagal menambahkan policy, sudah terdapat policy dengan Company %s", selectedCompany.getName()));
+                return "response-policy";
+            }
         }
 
         Policy policyAdded = policyService.addPolicy(policy);
@@ -269,8 +278,7 @@ public class PolicyController {
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "minCoverage", required = false) Long minCoverage,
             @RequestParam(value = "maxCoverage", required = false) Long maxCoverage,
-            Model model
-    ) {
+            Model model) {
 
         // Get filtered list of policies based on provided filters
         List<Policy> filteredPolicies = policyService.getFilteredPolicies(status, minCoverage, maxCoverage);
@@ -293,9 +301,10 @@ public class PolicyController {
     }
 
     @GetMapping("/policy/{id}/update")
-    public String updatePolicy(@PathVariable("id") String id, Model model){
+    public String updatePolicy(@PathVariable("id") String id, Model model) {
         Policy searchedpPolicy = policyService.getPolicyById(id);
         var policyDTO = new UpdatePolicyRequestDTO();
+        policyDTO.setId(id);
         policyDTO.setExpiryDate(searchedpPolicy.getExpiryDate());
 
         model.addAttribute("policyDTO", policyDTO);
@@ -303,11 +312,50 @@ public class PolicyController {
         List<Coverage> listCoverage = searchedpPolicy.getCompany().getListCoverage();
         String totalCoverage = companyService.calculateTotalCoverageForCompany(searchedpPolicy.getCompany());
 
-            // Add the fetched data to the model
+        // Add the fetched data to the model
         model.addAttribute("listCoverage", listCoverage);
         model.addAttribute("totalCoverage", totalCoverage);
 
         return "form-update-policy";
+    }
+
+    @PostMapping("/policy/update")
+    public String updatePolicy(@Valid @ModelAttribute("policyDTO") UpdatePolicyRequestDTO policyDTO,
+            BindingResult bindingResult, Model model) {
+        Policy searchedPolicy = policyService.getPolicyById(policyDTO.getId());
+
+        // If there are binding errors, return the form with errors
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("policyDTO", policyDTO);
+            model.addAttribute("policy", searchedPolicy);
+            List<Coverage> listCoverage = searchedPolicy.getCompany().getListCoverage();
+            String totalCoverage = companyService.calculateTotalCoverageForCompany(searchedPolicy.getCompany());
+
+            // Add the fetched data to the model
+            model.addAttribute("listCoverage", listCoverage);
+            model.addAttribute("totalCoverage", totalCoverage);
+            return "form-update-policy";
+        }
+
+        // Update the policy's expiry date
+        searchedPolicy.setExpiryDate(policyDTO.getExpiryDate());
+
+        // Save the updated policy
+        policyService.updatePolicy(searchedPolicy);
+
+        model.addAttribute("responseMessage",
+                String.format("Berhasil melakukan update terhadap policy dengan ID %s", searchedPolicy.getId()));
+        return "response-policy";
+    }
+
+    @GetMapping("/policy/{id}/delete")
+    public String deleteCompany(@PathVariable("id") String id, Model model) {
+        var policy = policyService.getPolicyById(id);
+        policyService.deletePolicy(policy);
+
+        model.addAttribute("responseMessage", String.format("Berhasil melakuakn pembatalan Policy dengan ID %s", policy.getId()));
+
+        return "response-policy";
     }
 
 }

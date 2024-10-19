@@ -73,10 +73,10 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Insurance Limit:</label>
-                                <span th:text="${insuranceLimit}"></span>
+                                <span th:text="'Rp ' + ${#numbers.formatDecimal(insuranceLimit, 0, 'POINT', 2, 'COMMA')}"></span>
                             </div>
                         </div>
-
+                        
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label">Class:</label>
@@ -84,7 +84,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Available Limit:</label>
-                                <span th:text="${availableLimit}"></span>
+                                <span th:text="'Rp ' + ${#numbers.formatDecimal(availableLimit, 0, 'POINT', 2, 'COMMA')}"></span>
                             </div>
                         </div>
 

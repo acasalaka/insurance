@@ -15,7 +15,5 @@ public interface CompanyService {
     Company updateCompany(Company company);
     void deleteCompany(Company company);
     long getTotalCoverage(Company company);
-
-
-
+    boolean checkCanDeleteCompany(Company company);
 }

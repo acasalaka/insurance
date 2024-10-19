@@ -10,4 +10,10 @@ public interface PolicyService {
     Policy addPolicy(Policy policy);
     List<Policy> getFilteredPolicies(Integer status, Long minCoverage, Long maxCoverage);
     Policy getPolicyById(String id);
+    Policy updatePolicy(Policy policy);
+    void initialCheckForExpiredPolicies();
+    void checkAndUpdateExpiredPolicies();
+    Policy updateStatusPolicy(Policy policy);
+    List<Policy> updateStatusListPoliciesAndGetNotCancelled(List<Policy> listPolicies);
+    void deletePolicy(Policy policy);
 }

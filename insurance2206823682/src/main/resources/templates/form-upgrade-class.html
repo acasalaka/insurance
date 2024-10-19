@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Upgrade Class</title>
+    <object th:include="~{fragments/common :: js}" th:remove="tag"></object>
+    <object th:include="~{fragments/common :: css}" th:remove="tag"></object>
+    <link rel="stylesheet" th:href="@{/css/custom.css}">
+    <style>
+        .btn-upgrade {
+            background-color: #4f70fe;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background-color: #f06565;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .card {
+            width: 500px;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        table.table-borderless td {
+            padding: 0.5rem 0;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .select-class {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="text-center my-4">
+                <h2>Upgrade Class</h2>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <!-- Upgrade Class Form -->
+                    <form th:action="@{/patient/upgrade-class}" th:object="${upgradeDTO}" method="POST">
+                        <input class="form-control" type="hidden" th:field="*{id}" th:value="*{id}"/>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">NIK</th>
+                                    <td th:text="': ' + ${patient.nik}"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Name</th>
+                                    <td th:text="': ' + ${patient.name}"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Gender</th>
+                                    <td th:text="': ' + (${patient.gender == 0 ? 'Male' : 'Female'})"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Date of Birth</th>
+                                    <td th:text="': ' + ${#dates.format(patient.birthDate, 'MMMM dd, yyyy')}"></td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <td th:text="'(' + ${yearMonthDay} + ')'"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Class : </th>
+                                    <td>
+                                        <select class="form-control" id="pClass" th:field="*{pClass}">
+                                            <option value="1">Class 1 - Limit: Rp50,000,000.00</option>
+                                            <option value="2">Class 2 - Limit: Rp35,000,000.00</option>
+                                            <option value="3">Class 3 - Limit: Rp25,000,000.00</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Cancel and Upgrade Buttons -->
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="button" class="btn-cancel me-3" onclick="window.location.href='/policy/all'">Cancel</button>
+                            <button type="submit" class="btn-upgrade">Upgrade</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

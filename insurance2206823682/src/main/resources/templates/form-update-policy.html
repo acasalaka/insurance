@@ -110,7 +110,8 @@
         <div class="row justify-content-center">
             <div class="card" style="width: 60rem;">
                 <div class="card-body">
-                    <form th:action="@{/policy/{id}/update(id=${policy.id})}" th:object="${policyDTO}" method="POST">
+                    <form th:action="@{/policy/update}" th:object="${policyDTO}" method="POST">
+                        <input class="form-control" type="hidden" th:field="*{id}" th:value="*{id}"/>
                         <!-- Policy Information Section -->
                         <div class="row mb-3">
                             <div class="col-md-6">

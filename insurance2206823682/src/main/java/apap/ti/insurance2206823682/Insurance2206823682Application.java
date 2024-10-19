@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.github.javafaker.Faker;
 
@@ -17,6 +18,7 @@ import apap.ti.insurance2206823682.service.PolicyService;
 import jakarta.transaction.Transactional;
 
 @SpringBootApplication
+@EnableScheduling
 public class Insurance2206823682Application {
 
     public static void main(String[] args) {
