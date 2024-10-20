@@ -34,15 +34,17 @@ public class CompanyController {
     @Autowired
     private CoverageService coverageService;
 
-    // @Autowired
-    // private PatientService patientService;
+    @Autowired
+    private PatientService patientService;
 
-    // @Autowired
-    // private PolicyService policyService;
+    @Autowired
+    private PolicyService policyService;
 
     @GetMapping("/")
     private String home(Model model) {
-        // tambahin model attribute buat total nya
+        model.addAttribute("totalCompany", companyService.getAllCompany().size());
+        model.addAttribute("totalPatient", patientService.gettAllPatient().size());
+        model.addAttribute("totalPolicy", policyService.getAllPolicy().size());
         return "home";
     }
 
@@ -164,9 +166,6 @@ public class CompanyController {
         companyFromDTO.setEmail(companyDTO.getEmail());
         companyFromDTO.setAddress(companyDTO.getAddress());
         companyFromDTO.setListCoverage(companyDTO.getListCoverage());
-
-        // System.out.println("ini print");
-        // System.out.println(companyDTO.getId());
 
         companyService.updateCompany(companyFromDTO);
 

@@ -51,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
         String formattedTotal = currencyFormat.format(totalCoverage);
 
         // Return the formatted string with "Rp" instead of default symbol
-        return formattedTotal.replace("Rp", "Rp ").replace(",00", ",00");
+        return formattedTotal.replace("Rp", "Rp").replace(",00", ",00");
     }
 
     @Override

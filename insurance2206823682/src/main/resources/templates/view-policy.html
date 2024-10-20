@@ -141,8 +141,8 @@
                 <p><label>Patient Name:</label> <span th:text="${policy.patient.name}"></span></p>
                 <p><label>Company Name:</label> <span th:text="${policy.company.name}"></span></p>
                 <p><label>Expiry Date:</label> <span th:text="${#dates.format(policy.expiryDate, 'MMMM d, yyyy')}"></span></p>
-                <p><label>Total Coverage:</label> <span th:text="'Rp ' + ${#numbers.formatDecimal(policy.totalCoverage, 0, 'POINT', 2, 'COMMA')}"></span></p>
-                <p><label>Total Covered:</label> <span th:text="${policy.totalCovered == 0 ? 'Rp 0,00' : 'Rp ' + #numbers.formatDecimal(policy.totalCovered, 0, 'POINT', 2, 'COMMA')}"></span></p>
+                <p><label>Total Coverage:</label> <span th:text="'Rp' + ${#numbers.formatDecimal(policy.totalCoverage, 0, 'POINT', 2, 'COMMA')}"></span></p>
+                <p><label>Total Covered:</label> <span th:text="${policy.totalCovered == 0 ? 'Rp0,00' : 'Rp' + #numbers.formatDecimal(policy.totalCovered, 0, 'POINT', 2, 'COMMA')}"></span></p>
             </div>
             <div class="col-md-6">
                 <p><label>Created At:</label> <span th:text="${#dates.format(policy.createdAt, 'MMMM d, yyyy')}"></span></p>
@@ -175,7 +175,7 @@
                     <tr th:each="coverage, stat : ${policy.company.listCoverage}">
                         <td th:text="${stat.index + 1}">1</td>
                         <td th:text="${coverage.name}"></td>
-                        <td th:text="'Rp ' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}"></td>
+                        <td th:text="'Rp' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}"></td>
                     </tr>
                 </tbody>
             </table>

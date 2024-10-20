@@ -4,23 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import apap.ti.insurance2206823682.model.Company;
-import apap.ti.insurance2206823682.model.Patient;
 import apap.ti.insurance2206823682.model.Policy;
-import apap.ti.insurance2206823682.repository.CompanyDb;
-import apap.ti.insurance2206823682.repository.PatientDb;
 import apap.ti.insurance2206823682.repository.PolicyDb;
 import jakarta.annotation.PostConstruct;
 
 @Service
 public class PolicyServiceImpl implements PolicyService {
 
-    @Autowired
-    private PolicyDb policyDb;
+    private final PolicyDb policyDb;
+
+    public PolicyServiceImpl(PolicyDb policyDb){
+        this.policyDb = policyDb;
+    }
 
     @Override
     public String createId(String name, String companyName) {
@@ -154,5 +152,10 @@ public class PolicyServiceImpl implements PolicyService {
     public void deletePolicy(Policy policy){
         policy.setStatus(4);
         policyDb.save(policy);
+    }
+
+    @Override
+    public List<Policy> getAllPolicy(){
+        return policyDb.findAll();
     }
 }

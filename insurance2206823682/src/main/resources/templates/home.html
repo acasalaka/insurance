@@ -15,32 +15,32 @@
     <div th:replace="fragments/navbar :: navbar"></div>
     <div class="container text-center">
         <div class="hero-section">
-            <img src="https://via.placeholder.com/100" class="hero-logo" alt="Insurance Logo">
+            <img src="/images/red-cross.svg" class="hero-logo" alt="Insurance Logo">
             <h1 class="title">Insurance System</h1>
         </div>
 
         <!-- Stats Section -->
         <div class="row stats">
             <div class="col-md-4">
-                <div class="card">
+                <div class="card" style="background-color: #2171ae;"> <!-- Light Blue Shade 1 -->
                     <div class="card-body">
-                        <div>57</div>
+                        <div th:text="${totalPolicy}"></div>
                         <div class="card-title">Policy</div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card">
+                <div class="card" style="background-color: #549cd3;"> <!-- Light Blue Shade 2 -->
                     <div class="card-body">
-                        <div>15</div>
+                        <div th:text="${totalCompany}"></div>
                         <div class="card-title">Company</div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card">
+                <div class="card" style="background-color: #4c91c6;"> <!-- Light Blue Shade 3 -->
                     <div class="card-body">
-                        <div>89</div>
+                        <div th:text="${totalPatient}"></div>
                         <div class="card-title">Patient</div>
                     </div>
                 </div>

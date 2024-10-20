@@ -1,6 +1,5 @@
 package apap.ti.insurance2206823682.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,42 +10,37 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import apap.ti.insurance2206823682.service.CompanyService;
-import apap.ti.insurance2206823682.service.CoverageService;
 import apap.ti.insurance2206823682.service.PatientService;
 import apap.ti.insurance2206823682.service.PolicyService;
 import jakarta.validation.Valid;
-import apap.ti.insurance2206823682.dto.request.AddCompanyRequestDTO;
 import apap.ti.insurance2206823682.dto.request.AddPatientPolicyRequestDTO;
 import apap.ti.insurance2206823682.dto.request.AddPolicyRequestDTO;
 import apap.ti.insurance2206823682.dto.request.UpdatePolicyRequestDTO;
-import apap.ti.insurance2206823682.dto.request.UpgradePatientRequestDTO;
 import apap.ti.insurance2206823682.model.Company;
 import apap.ti.insurance2206823682.model.Coverage;
 import apap.ti.insurance2206823682.model.Patient;
 import apap.ti.insurance2206823682.model.Policy;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 @Controller
 public class PolicyController {
 
-    @Autowired
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
-    @Autowired
-    private CoverageService coverageService;
+    private final PolicyService policyService;
 
-    @Autowired
-    private PolicyService policyService;
+    private final PatientService patientService;
 
-    @Autowired
-    private PatientService patientService;
+    public PolicyController(CompanyService companyService, PolicyService policyService, PatientService patientService){
+        this.companyService = companyService;
+        this.policyService = policyService;
+        this.patientService = patientService;
+    }
+    
 
     @GetMapping("/policy/create/search-patient")
     private String searchPatient(Model model) {
@@ -353,9 +347,14 @@ public class PolicyController {
         var policy = policyService.getPolicyById(id);
         policyService.deletePolicy(policy);
 
-        model.addAttribute("responseMessage", String.format("Berhasil melakuakn pembatalan Policy dengan ID %s", policy.getId()));
+        model.addAttribute("responseMessage", String.format("Berhasil melakukan pembatalan Policy dengan ID %s", policy.getId()));
 
         return "response-policy";
+    }
+
+    @GetMapping("/policy/stat")
+    public String viewStatistics(Model model) {
+        return "view-statistics-policy";
     }
 
 }

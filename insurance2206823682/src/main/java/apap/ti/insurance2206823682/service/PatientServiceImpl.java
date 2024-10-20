@@ -10,7 +10,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import apap.ti.insurance2206823682.model.Company;
 import apap.ti.insurance2206823682.model.Patient;
 import apap.ti.insurance2206823682.model.Policy;
 import apap.ti.insurance2206823682.repository.PatientDb;

@@ -1,7 +1,6 @@
 package apap.ti.insurance2206823682.service;
 
 import apap.ti.insurance2206823682.model.Patient;
-import apap.ti.insurance2206823682.model.Policy;
 
 import java.util.List;
 import java.util.UUID;

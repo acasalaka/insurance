@@ -1,6 +1,5 @@
 package apap.ti.insurance2206823682.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import apap.ti.insurance2206823682.dto.request.UpgradePatientRequestDTO;
-import apap.ti.insurance2206823682.model.Coverage;
 import apap.ti.insurance2206823682.model.Patient;
 import apap.ti.insurance2206823682.service.PatientService;
 import jakarta.validation.Valid;

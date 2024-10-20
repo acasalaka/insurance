@@ -120,7 +120,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Total Coverage:</label>
-                                <span th:text="'Rp ' + ${#numbers.formatDecimal(policy.totalCoverage, 0, 'POINT', 2, 'COMMA')}"></span>
+                                <span th:text="'Rp' + ${#numbers.formatDecimal(policy.totalCoverage, 0, 'POINT', 2, 'COMMA')}"></span>
                             </div>
                         </div>
 
@@ -131,7 +131,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Total Covered:</label>
-                                <span th:text="'Rp ' + ${#numbers.formatDecimal(policy.totalCovered, 0, 'POINT', 2, 'COMMA')}"></span>
+                                <span th:text="'Rp' + ${#numbers.formatDecimal(policy.totalCovered, 0, 'POINT', 2, 'COMMA')}"></span>
                             </div>
                         </div>
 
@@ -185,7 +185,7 @@
                                     <tr th:each="coverage, stat : ${listCoverage}">
                                         <td th:text="${stat.index + 1}"></td>
                                         <td th:text="${coverage.name}"></td>
-                                        <td th:text="'Rp ' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}"></td>
+                                        <td th:text="'Rp' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}"></td>
                                     </tr>
                                 </tbody>
                             </table>

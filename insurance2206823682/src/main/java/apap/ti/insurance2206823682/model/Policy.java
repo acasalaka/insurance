@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -41,17 +43,12 @@ public class Policy {
 
     private long totalCovered;
     
+    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    
+
+    @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-    }
-
 }
 

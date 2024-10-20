@@ -80,7 +80,7 @@
                                         <option th:each="coverage : ${listCoverageExisting}"
                                             th:value="${coverage.id}"
                                             th:data-coverage-amount="${coverage.coverageAmount}"
-                                            th:text="${coverage.name + ' - ' + coverage.formattedCoverageAmount}">
+                                            th:text="${coverage.name + ' - ' + 'Rp' + #numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}">
                                         </option>
                                     </select>
                                     <div class="error" th:if="${#fields.hasErrors('listCoverage[' + iterationStatus.index + '].id')}"

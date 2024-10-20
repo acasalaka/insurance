@@ -6,11 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -34,21 +34,12 @@ public class Coverage {
     @ManyToMany(mappedBy = "listCoverage")
     private List<Company> listCompany;
 
+    @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
+    @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-    }
-
-    public String getFormattedCoverageAmount() {
-        Locale indonesianLocale = new Locale("id", "ID");
-        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(indonesianLocale);
-        return currencyFormatter.format(coverageAmount).replace("Rp", "Rp").replace(",00", ",00");
-    }
 }

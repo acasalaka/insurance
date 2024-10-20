@@ -73,7 +73,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Insurance Limit:</label>
-                                <span th:text="'Rp ' + ${#numbers.formatDecimal(insuranceLimit, 0, 'POINT', 2, 'COMMA')}"></span>
+                                <span th:text="'Rp' + ${#numbers.formatDecimal(insuranceLimit, 0, 'POINT', 2, 'COMMA')}"></span>
                             </div>
                         </div>
                         
@@ -84,7 +84,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Available Limit:</label>
-                                <span th:text="'Rp ' + ${#numbers.formatDecimal(availableLimit, 0, 'POINT', 2, 'COMMA')}"></span>
+                                <span th:text="'Rp' + ${#numbers.formatDecimal(availableLimit, 0, 'POINT', 2, 'COMMA')}"></span>
                             </div>
                         </div>
 
@@ -147,7 +147,7 @@
                                         <td th:text="${stat.index + 1}"></td>
                                         <td th:text="${coverage.name}"></td>
                                         <td
-                                            th:text="'Rp ' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}">
+                                            th:text="'Rp' + ${#numbers.formatDecimal(coverage.coverageAmount, 0, 'POINT', 2, 'COMMA')}">
                                         </td>
                                     </tr>
                                 </tbody>
@@ -157,7 +157,7 @@
                         <!-- Submit and Cancel Buttons -->
                         <div class="d-flex justify-content-between">
                             <a href="#" class="btn btn-danger">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary" th:disabled="${listCoverage == null}">Submit</button>
                         </div>
 
                     </form>

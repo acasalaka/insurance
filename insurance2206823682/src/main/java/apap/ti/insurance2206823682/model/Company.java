@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -45,19 +47,15 @@ public class Company {
         inverseJoinColumns = @JoinColumn(name = "coverage_id"))
     private List<Coverage> listCoverage;
     
+    @CreatedDate // Automatically sets the date when the entity is created
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
-    
+
+    @LastModifiedDate // Automatically updates the date when the entity is updated
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date deletedAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
-    }
 
 }

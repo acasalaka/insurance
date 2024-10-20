@@ -11,9 +11,12 @@
     <!-- navbar.html -->
     <nav th:fragment="navbar" class="navbar navbar-expand-lg custom-navbar">
         <div class="container-fluid">
-            <!-- Home Logo -->
-            <a class="navbar-brand text-white" href="/">
-                <i class="bi bi-house-door-fill"></i> Apap Medika
+            <!-- Home Logo with SVG -->
+            <a class="navbar-brand text-white d-flex align-items-center" th:href="@{/}">
+                <!-- SVG Icon -->
+                <img src="/images/hospital.svg" alt="ApapMedika Logo" style="width: 30px; height: 30px; margin-right: 8px;">
+                <!-- Text -->
+                <span><i class="bi bi-house-door-fill"></i> Apap Medika</span>
             </a>
 
             <!-- Toggle button for mobile view -->
@@ -26,13 +29,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="/" th:href="@{/}">Home</a>
+                        <a class="nav-link text-white" th:href="@{/}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white"  th:href="@{/policy/all}">Policy</a>
+                        <a class="nav-link text-white" th:href="@{/policy/all}">Policy</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white"  th:href="@{/company/all}">Company</a>
+                        <a class="nav-link text-white" th:href="@{/company/all}">Company</a>
                     </li>
                 </ul>
             </div>
@@ -40,8 +43,5 @@
     </nav>
 
 </body>
-
-
-
 
 </html>
