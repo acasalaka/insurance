@@ -40,6 +40,7 @@ public class CompanyRestServiceImpl implements CompanyRestService{
         companyResponseDTO.setName(company.getName());
         companyResponseDTO.setEmail(company.getEmail());
         companyResponseDTO.setAddress(company.getAddress());
+        companyResponseDTO.setContact(company.getContact());
 
         if (company.getListCoverage() != null){
             var listCoverageResponseDTO = new ArrayList<CoverageResponseDTO>();

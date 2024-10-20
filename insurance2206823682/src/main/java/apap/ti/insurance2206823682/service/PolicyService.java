@@ -13,7 +13,7 @@ public interface PolicyService {
     void initialCheckForExpiredPolicies();
     void checkAndUpdateExpiredPolicies();
     Policy updateStatusPolicy(Policy policy);
-    List<Policy> updateStatusListPoliciesAndGetNotCancelled(List<Policy> listPolicies);
+    List<Policy> updateStatusListPolicies(List<Policy> listPolicies);
     void deletePolicy(Policy policy);
     List<Policy> getAllPolicy();
 }

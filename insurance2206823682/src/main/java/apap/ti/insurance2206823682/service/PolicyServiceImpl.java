@@ -73,17 +73,15 @@ public class PolicyServiceImpl implements PolicyService {
         } else {
             result = policyDb.findAll();
         }
-        return updateStatusListPoliciesAndGetNotCancelled(result);
+        return updateStatusListPolicies(result);
     }
 
     @Override
-    public List<Policy> updateStatusListPoliciesAndGetNotCancelled(List<Policy> listPolicies){
+    public List<Policy> updateStatusListPolicies(List<Policy> listPolicies){
         List<Policy> result = new ArrayList<>();
         for (Policy policy : listPolicies){
-            if (policy.getStatus() != 4){
-                policy = updateStatusPolicy(policy);
-                result.add(policy);
-            }
+            policy = updateStatusPolicy(policy);
+            result.add(policy);
         }
         return result;
     }

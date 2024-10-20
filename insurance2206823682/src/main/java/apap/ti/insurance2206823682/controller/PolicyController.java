@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 @Controller
 public class PolicyController {
@@ -100,6 +101,22 @@ public class PolicyController {
     public String addPatient(@Valid @ModelAttribute("patientDTO") AddPatientPolicyRequestDTO patientDTO,
             BindingResult bindingResult, Model model) {
         Company selectedCompany = companyService.getCompanyById(patientDTO.getCompany().getId());
+        
+        Date today = new Date(); // Current date
+        if (patientDTO.getExpiryDate() != null && patientDTO.getExpiryDate().before(today)) {
+            bindingResult.rejectValue("expiryDate", "error.patientDTO", "Tanggal expired tidak boleh lebih awal dari hari ini.");
+        }
+
+        if (patientDTO.getBirthDate() != null && patientDTO.getBirthDate().after(today)) {
+            bindingResult.rejectValue("birthDate", "error.patientDTO", "Tanggal lahir tidak boleh lebih dari hari ini.");
+        }
+
+        for (Patient itemPatient : patientService.gettAllPatient()){
+            if (itemPatient.getNik().toLowerCase().equals(patientDTO.getNik().toLowerCase())){
+                bindingResult.rejectValue("nik", "error.patientDTO", "NIK tidak boleh sama dengan pasien lain");
+            }
+        }
+
         if (bindingResult.hasErrors()) {
             if (selectedCompany != null) {
                 // Fetch the coverages and total coverage
@@ -207,6 +224,11 @@ public class PolicyController {
             Model model) {
         Patient searchedPatient = patientService.getPatientByNIK(nik);
         Company selectedCompany = companyService.getCompanyById(patientDTO.getCompany().getId());
+
+        Date today = new Date(); // Current date
+        if (patientDTO.getExpiryDate() != null && patientDTO.getExpiryDate().before(today)) {
+            bindingResult.rejectValue("expiryDate", "error.patientDTO", "Tanggal expired tidak boleh lebih awal dari hari ini.");
+        }
 
         if (bindingResult.hasErrors()) {
             if (selectedCompany != null) {
