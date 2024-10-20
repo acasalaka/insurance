@@ -71,6 +71,9 @@
                             </div>
                         </div>
 
+                        <!-- Duplicate Coverage Error Message -->
+                        <div class="error" th:if="${#fields.hasErrors('listCoverage')}" th:errors="*{listCoverage}"></div>
+
                         <div th:each="coverageItem, iterationStatus : *{listCoverage}">
                             <div class="row mb-2">
                                 <!-- Coverage Dropdown -->

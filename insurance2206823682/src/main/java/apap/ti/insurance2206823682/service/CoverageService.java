@@ -8,4 +8,6 @@ public interface CoverageService {
     void initData();
     long countCoverages();
     List<Coverage> getAllCoverage();
+    boolean hasDuplicateCoverages(List<Coverage> listCoverage);
+
 }

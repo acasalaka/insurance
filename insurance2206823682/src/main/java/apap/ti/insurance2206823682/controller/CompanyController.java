@@ -81,6 +81,11 @@ public class CompanyController {
     @PostMapping("/company/add")
     public String addCompany(@Valid @ModelAttribute("companyDTO") AddCompanyRequestDTO addCompanyRequestDTO,
             BindingResult bindingResult, Model model) {
+
+        if (coverageService.hasDuplicateCoverages(addCompanyRequestDTO.getListCoverage())) {
+            bindingResult.rejectValue("listCoverage", "duplicate", "Terdapat duplikat coverage.");
+        }
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("listCoverageExisting", coverageService.getAllCoverage());
             return "form-add-company";
@@ -155,10 +160,15 @@ public class CompanyController {
     @PostMapping("/company/update")
     public String updateCompany(@ModelAttribute("companyDTO") @Valid UpdateCompanyRequestDTO companyDTO,
             BindingResult bindingResult, Model model) {
+        if (coverageService.hasDuplicateCoverages(companyDTO.getListCoverage())) {
+            bindingResult.rejectValue("listCoverage", "duplicate", "Terdapat duplikat coverage.");
+        }
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("listCoverageExisting", coverageService.getAllCoverage());
             return "form-update-company";
         }
+
         var companyFromDTO = new Company();
         companyFromDTO.setId(companyDTO.getId());
         companyFromDTO.setName(companyDTO.getName());
@@ -206,11 +216,12 @@ public class CompanyController {
     @GetMapping("/company/{id}/delete")
     public String deleteCompany(@PathVariable("id") UUID id, Model model) {
         var company = companyService.getCompanyById(id);
-        if (!companyService.checkCanDeleteCompany(company)){
-            model.addAttribute("responseMessage", String.format("Tidak dapat menghapus Data Company %s", company.getName()));
+        if (!companyService.checkCanDeleteCompany(company)) {
+            model.addAttribute("responseMessage",
+                    String.format("Tidak dapat menghapus Data Company %s", company.getName()));
             return "response-company";
         }
-    
+
         companyService.deleteCompany(company);
         model.addAttribute("responseMessage", String.format("Berhasil menghapus Data Company %s", company.getName()));
 

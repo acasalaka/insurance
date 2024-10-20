@@ -143,13 +143,11 @@
         <div class="company-detail-header">
             <span>Company Detail</span>
             <div class="buttons">
-                <a class="btn btn-warning" th:href="@{/company/{id}/update(id=${company.id})}">Update</a>
+                <a class="btn btn-warning" th:href="@{/company/{id}/update(id=${company.id})}" style="color: white;">Update</a>
                 <!-- Delete Button -->
                 <a class="btn btn-danger" href="#" data-bs-toggle="modal"
                     data-bs-target="#confirmDeleteModal">Delete</a>
-
                 <!-- Delete Confirmation Modal -->
-
             </div>
         </div>
 
