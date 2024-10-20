@@ -119,7 +119,21 @@ public class PolicyRestServiceImpl implements PolicyRestService {
         PatientResponseDTO patientResponseDTO = patientRestService.getPatientById(policy.getPatient().getId());
         policyResponseDTO.setPatient(patientResponseDTO);
 
-        policyResponseDTO.setStatus(policy.getStatus());
+        String status;
+        if (policy.getStatus() == 0){
+            status = "Created";
+        } else if (policy.getStatus() == 1){
+            status = "Partially Claimed";
+        } else if (policy.getStatus() == 2){
+            status = "Fully Claimed";
+        } else if (policy.getStatus() == 3){
+            status = "Expired";
+        } else {
+            status = "Cancelled";
+        }
+
+        policyResponseDTO.setStatus(status);
+
         policyResponseDTO.setExpiryDate(policy.getExpiryDate());
         policyResponseDTO.setTotalCoverage(policy.getTotalCoverage());
         policyResponseDTO.setTotalCovered(policy.getTotalCovered());

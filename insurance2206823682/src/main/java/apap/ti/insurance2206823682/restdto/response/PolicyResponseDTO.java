@@ -24,7 +24,7 @@ public class PolicyResponseDTO {
 
     private PatientResponseDTO patient;
     
-    private int status;
+    private String status;
     
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date expiryDate;
