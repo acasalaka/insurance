@@ -1,10 +1,10 @@
 spring:
   application:
-    name: insurance2206823682
+    name: tk-apap
   datasource:
-    url: jdbc:postgresql://localhost:15001/insurance2206823682
-    username: postgres
-    password: secret99
+    url: jdbc:postgresql://localhost:15001/tk-apap-50
+    username: tk-apap-50
+    password: tk-apap-50
   jpa:
     properties:
       hibernate:
@@ -13,4 +13,6 @@ spring:
             non_contextual_creation: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+server:
+  port: 8081
