@@ -1,0 +1,21 @@
+services:
+  insurance:
+    container_name: insurance-2206823682
+    build:
+      context: .
+    ports:
+      - '10243:8080'
+    restart: 'no'
+    labels:
+      uid: "2206823682"
+    platform: linux/amd64
+    networks:
+      - backend-network
+    environment:
+      - DATABASE_URL_DEV=jdbc:postgresql://db:5432/insurance
+      - DEV_USERNAME=postgres
+      - DEV_PASSWORD=secret99
+networks:
+  backend-network:
+    name: apap-243_backend-network
+    external: true
