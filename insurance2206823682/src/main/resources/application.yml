@@ -1,12 +1,10 @@
 spring:
-  main:
-    allow-circular-references: true
   application:
     name: insurance2206823682
   datasource:
-    url: jdbc:postgresql://db:5432/manpromanpro
-    username: postgres
-    password: secret99
+    url: jdbc:postgresql://localhost:15001/tk-apap-50
+    username: tk-apap-50
+    password: tk-apap-50
   jpa:
     properties:
       hibernate:
@@ -17,4 +15,8 @@ spring:
     hibernate:
       ddl-auto: create
 server:
-  port: 8080
+  port: 8081
+insurance2206823682:
+    app:
+        jwtSecret: "YhEwGneRYubPRrqHmZQVeRrsGZPbbNwFndF"
+        jwtExpirationMs: 86400000
