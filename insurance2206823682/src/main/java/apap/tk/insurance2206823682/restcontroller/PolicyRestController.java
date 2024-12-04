@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import apap.tk.insurance2206823682.restdto.request.AddPolicyRequestRestDTO;
+import apap.tk.insurance2206823682.restdto.request.ListPolicyWithListTreatmentRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.request.UpdatePolicyExpiryDateRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.response.BaseResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.PolicyResponseDTO;
@@ -167,7 +168,7 @@ public class PolicyRestController {
         return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/detail")
+    @GetMapping("/admin/detail")
     public ResponseEntity<?> getPolicyById(@RequestParam("id") String id){
         var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
 
@@ -188,11 +189,11 @@ public class PolicyRestController {
         return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/detail")
+    @GetMapping("/patient/detail")
     public ResponseEntity<?> getPolicyById(@RequestParam("id") String id, @RequestParam("id") String idPatient){
         var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
 
-        PolicyResponseDTO policy = policyRestService.getPolicyById(id);
+        PolicyResponseDTO policy = policyRestService.getPolicyByIdAndIdPatient(id, idPatient);
 
         if (policy == null) {
             baseResponseDTO.setStatus(HttpStatus.NOT_FOUND.value());
@@ -292,9 +293,14 @@ public class PolicyRestController {
     }
     
     @GetMapping("/policy-list-by-treatment")
-    public ResponseEntity<?> getPolicyListByTreatment(@Valid @RequestBody UpdatePolicyExpiryDateRequestRestDTO policyDTO){
-        
-        return null;
+    public ResponseEntity<?> getPolicyListByTreatment(@Valid @RequestBody ListPolicyWithListTreatmentRequestRestDTO policyDTO){
+        var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
 
+        List<PolicyResponseDTO> listPolicies = policyRestService.getPoliciesByTreatments(policyDTO.getIdsTreatments());
+        baseResponseDTO.setStatus(HttpStatus.OK.value());
+        baseResponseDTO.setMessage("Data policies berhasil dicari");
+        baseResponseDTO.setTimestamp(new Date());
+        baseResponseDTO.setData(listPolicies);
+        return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
 }

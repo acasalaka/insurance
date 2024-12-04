@@ -35,7 +35,7 @@ public class Company {
     private String email;
 
     private String address;
-
+    
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;

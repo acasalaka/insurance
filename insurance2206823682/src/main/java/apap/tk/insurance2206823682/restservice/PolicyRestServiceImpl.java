@@ -13,8 +13,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import apap.tk.insurance2206823682.model.Company;
+import apap.tk.insurance2206823682.model.Coverage;
 import apap.tk.insurance2206823682.model.Policy;
+import apap.tk.insurance2206823682.model.UsedCoverageOfPolicy;
 import apap.tk.insurance2206823682.repository.PolicyDb;
+import apap.tk.insurance2206823682.repository.UsedCoverageOfPolicyDb;
 import apap.tk.insurance2206823682.restdto.request.AddPolicyRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.request.UpdatePolicyExpiryDateRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.response.CompanyResponseDTO;
@@ -28,6 +31,9 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Autowired
     private PolicyDb policyDb;
+
+    @Autowired
+    private UsedCoverageOfPolicyDb usedCoverageOfPolicyDb;
 
     @Override
     public List<PolicyResponseDTO> getAllPolicy() {
@@ -71,7 +77,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Override
     public List<PolicyResponseDTO> getPolicyListByRangePatient(long min, long max, UUID id) {
-        List<Policy> policyList = policyDb.findByPatientIdAndTotalCoverageBetweenAndIsDeletedFalse(min, max, id);
+        List<Policy> policyList = policyDb.findByPatientIdAndTotalCoverageBetweenAndIsDeletedFalse(id, min, max);
         return policyList.stream()
                 .map(this::convertToPolicyResponseDTO)
                 .collect(Collectors.toList());
@@ -79,7 +85,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Override
     public PolicyResponseDTO getPolicyById(String id) {
-        Policy policy = policyDb.findById(id).orElse(null);
+        Policy policy = policyDb.findById(id);
 
         if (policy == null) {
             return null;
@@ -90,7 +96,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Override
     public PolicyResponseDTO getPolicyByIdAndIdPatient(String id, String idPatient) {
-        Policy policy = policyDb.findByIdAndIdPatient(id, UUID.fromString(idPatient));
+        Policy policy = policyDb.findByIdAndPatientId(id, UUID.fromString(idPatient));
 
         if (policy == null) {
             return null;
@@ -101,7 +107,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Override
     public PolicyResponseDTO updatePolicyExpiryDate(UpdatePolicyExpiryDateRequestRestDTO policyDTO) {
-        Policy policy = policyDb.findById(policyDTO.getId()).orElse(null);
+        Policy policy = policyDb.findById(policyDTO.getId());
 
         if (policy == null) {
             return null;
@@ -162,7 +168,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Override
     public PolicyResponseDTO cancelStatusPolicy(String id){
-        Policy policy = policyDb.findById(id).orElse(null);
+        Policy policy = policyDb.findById(id);
         
         if (policy == null){
             return null;
@@ -180,7 +186,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Override
     public PolicyResponseDTO deletePolicy(String id){
-        Policy policy = policyDb.findById(id).orElse(null);
+        Policy policy = policyDb.findById(id);
         
         if (policy == null){
             return null;
@@ -194,6 +200,31 @@ public class PolicyRestServiceImpl implements PolicyRestService {
         policy.setUpdatedAt(new Date());
         var updatedPolicy = policyDb.save(policy);
         return convertToPolicyResponseDTO(updatedPolicy);
+    }
+
+    @Override
+    public List<PolicyResponseDTO> getPoliciesByTreatments(List<Long> idTreatments){
+        List<Policy> policies = policyDb.findByCoverageIds(idTreatments);
+        List<Policy> fixedPolicies = new ArrayList<Policy>();
+        List<UsedCoverageOfPolicy> usedCoverageOfPolicies = usedCoverageOfPolicyDb.findAll();
+        
+        for (Policy policy : policies){
+            for (Coverage coverage : policy.getListCoverage()){
+                boolean isAdded = true;
+                for (UsedCoverageOfPolicy usedCoverageOfPolicy : usedCoverageOfPolicies){
+                    if (coverage.getId() == usedCoverageOfPolicy.getCoverageId()){
+                        isAdded = false;
+                    }
+                }
+                if (isAdded == true){
+                    fixedPolicies.add(policy);
+                    break;
+                }
+            }
+        }
+        return fixedPolicies.stream()
+        .map(this::convertToPolicyResponseDTO)
+        .collect(Collectors.toList());
     }
 
     public PolicyResponseDTO convertToPolicyResponseDTO(Policy policy) {

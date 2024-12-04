@@ -22,5 +22,5 @@ public class UsedCoverageOfPolicy {
     private String policyId;
 
     @Column(nullable = false)
-    private String coverageId;
+    private Long coverageId;
 }

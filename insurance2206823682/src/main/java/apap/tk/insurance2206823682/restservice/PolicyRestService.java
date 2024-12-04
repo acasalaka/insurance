@@ -19,4 +19,5 @@ public interface PolicyRestService {
     List<PolicyResponseDTO> getPolicyListByStatusPatient(int status, UUID id);
     List<PolicyResponseDTO> getPolicyListByRangePatient(long min, long max, UUID id);
     PolicyResponseDTO getPolicyByIdAndIdPatient(String id, String idPatient);
+    List<PolicyResponseDTO> getPoliciesByTreatments(List<Long> idTreatments);
 }

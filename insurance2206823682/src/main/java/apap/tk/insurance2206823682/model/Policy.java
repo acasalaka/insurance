@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -35,9 +36,18 @@ public class Policy {
     private long totalCoverage;
     private long totalCovered;
 
+    @ManyToMany
+    @JoinTable(
+        name = "policy_coverage",  // Name of the join table
+        joinColumns = @JoinColumn(name = "policy_id"),  // Foreign key for the Policy
+        inverseJoinColumns = @JoinColumn(name = "coverage_id")  // Foreign key for the Coverage
+    )
+    private List<Coverage> listCoverage;
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,4 +56,5 @@ public class Policy {
     private String createdBy;
     private String updatedBy;
     private boolean isDeleted;
+
 }

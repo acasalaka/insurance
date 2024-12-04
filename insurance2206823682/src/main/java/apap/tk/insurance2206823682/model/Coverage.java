@@ -37,4 +37,7 @@ public class Coverage {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+
+    @ManyToMany(mappedBy = "listCoverage")
+    private List<Policy> policies;
 }
