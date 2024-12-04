@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,24 @@ public class PolicyRestServiceImpl implements PolicyRestService {
     }
 
     @Override
+    public List<PolicyResponseDTO> getAllPolicyPatient(UUID id) {
+        List<Policy> policyList = policyDb.findByPatientIdAndIsDeletedFalse(id);
+        return policyList.stream()
+                .map(this::convertToPolicyResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<PolicyResponseDTO> getPolicyListByStatusAdmin(int status) {
         List<Policy> policyList = policyDb.findByStatusAndIsDeletedFalse(status);
+        return policyList.stream()
+                .map(this::convertToPolicyResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PolicyResponseDTO> getPolicyListByStatusPatient(int status, UUID id) {
+        List<Policy> policyList = policyDb.findByPatientIdAndStatusAndIsDeletedFalse(id, status);
         return policyList.stream()
                 .map(this::convertToPolicyResponseDTO)
                 .collect(Collectors.toList());
@@ -53,8 +70,27 @@ public class PolicyRestServiceImpl implements PolicyRestService {
     }
 
     @Override
+    public List<PolicyResponseDTO> getPolicyListByRangePatient(long min, long max, UUID id) {
+        List<Policy> policyList = policyDb.findByPatientIdAndTotalCoverageBetweenAndIsDeletedFalse(min, max, id);
+        return policyList.stream()
+                .map(this::convertToPolicyResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public PolicyResponseDTO getPolicyById(String id) {
         Policy policy = policyDb.findById(id).orElse(null);
+
+        if (policy == null) {
+            return null;
+        }
+
+        return convertToPolicyResponseDTO(policy);
+    }
+
+    @Override
+    public PolicyResponseDTO getPolicyByIdAndIdPatient(String id, String idPatient) {
+        Policy policy = policyDb.findByIdAndIdPatient(id, UUID.fromString(idPatient));
 
         if (policy == null) {
             return null;
