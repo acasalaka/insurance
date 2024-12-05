@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-circular-references: true
   application:
     name: insurance2206823682
   datasource:
@@ -16,7 +18,7 @@ spring:
       ddl-auto: create
 server:
   port: 8081
-# insurance2206823682:
-#     app:
-#         jwtSecret: "YhEwGneRYubPRrqHmZQVeRrsGZPbbNwFndF"
-#         jwtExpirationMs: 86400000
+insurance2206823682:
+  app:
+    jwtSecret: "hPjbJwZKskRmCnzroyAZfglqSKexYmxKeYPvSvJ"
+    jwtExpirationMs: 86400000

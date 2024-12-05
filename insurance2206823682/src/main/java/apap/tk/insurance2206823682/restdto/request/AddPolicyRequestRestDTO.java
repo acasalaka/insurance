@@ -1,10 +1,15 @@
 package apap.tk.insurance2206823682.restdto.request;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import apap.tk.insurance2206823682.model.Coverage;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,11 +19,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class AddPolicyRequestRestDTO {
-    @NotNull(message = "Tanggal expired tidak boleh kosong")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")    
-    private Date expiryDate;
 
-    @NotNull(message = "Company tidak boleh kosong")
-    private UUID company;
-    
+    // @Column(nullable = false)
+    private UUID companyId;
+
+    // @Column(nullable = false)
+    private UUID patientId;
+
+    private Date expiryDate;
 }
+
+

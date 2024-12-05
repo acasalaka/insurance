@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import apap.tk.insurance2206823682.model.Company;
 import apap.tk.insurance2206823682.model.Coverage;
 import apap.tk.insurance2206823682.model.Policy;
+import apap.tk.insurance2206823682.repository.CompanyDb;
+import apap.tk.insurance2206823682.restdto.response.CompanyResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.CoverageResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.PolicyResponseDTO;
 import apap.tk.insurance2206823682.service.CompanyService;
@@ -24,6 +27,9 @@ public class CompanyRestServiceImpl implements CompanyRestService {
     @Autowired
     CompanyService companyService;
 
+    @Autowired
+    CompanyDb companyDb;
+
     @Override
     public List<CoverageResponseDTO> getCoveragesByIdCompany(UUID id){
         List<Coverage> coverages = companyService.getCoverages(id);
@@ -32,6 +38,31 @@ public class CompanyRestServiceImpl implements CompanyRestService {
         .map(this::convertToCoverageResponseDTO)
         .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<CompanyResponseDTO> getAllCompany(){
+        List<Company> companies = companyDb.findAll();
+
+
+        return companies.stream()
+        .map(this::converToCompanyResponseDTO)
+        .collect(Collectors.toList());
+    }
+
+
+    public CompanyResponseDTO converToCompanyResponseDTO(Company company) {
+        var dto = new CompanyResponseDTO();
+        dto.setId(company.getId());
+        dto.setName(company.getName());
+        dto.setContact(company.getContact());
+        dto.setAddress(company.getAddress());
+        dto.setEmail(company.getEmail());
+        dto.setCreatedAt(company.getCreatedAt());
+        dto.setUpdatedAt(company.getUpdatedAt());
+        dto.setDeletedAt(company.getDeletedAt());
+
+        return dto;
     }
 
     public CoverageResponseDTO convertToCoverageResponseDTO(Coverage coverage) {

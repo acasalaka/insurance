@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import apap.tk.insurance2206823682.restdto.response.BaseResponseDTO;
+import apap.tk.insurance2206823682.restdto.response.CompanyResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.CoverageResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.PolicyResponseDTO;
 import apap.tk.insurance2206823682.restservice.CompanyRestService;
@@ -24,6 +25,19 @@ public class CompanyRestController {
     @Autowired
     private CompanyRestService companyRestService;
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll() {
+        var baseResponseDTO = new BaseResponseDTO<List<CompanyResponseDTO>>();
+
+        List<CompanyResponseDTO> listCoverages = companyRestService.getAllCompany();
+
+        baseResponseDTO.setStatus(HttpStatus.OK.value());
+        baseResponseDTO.setData(listCoverages);
+        baseResponseDTO.setMessage(String.format("List company berhasil ditemukan"));
+        baseResponseDTO.setTimestamp(new Date());
+
+        return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+    }
 
     @GetMapping("/get_coverages")
     public ResponseEntity<?> getListCoverages(@RequestParam("id") String id) {

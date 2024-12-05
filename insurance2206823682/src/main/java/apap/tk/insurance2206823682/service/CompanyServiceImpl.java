@@ -44,6 +44,17 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public Long getTotalCoverage(UUID id){
+        Long total = 0L;
+
+        for (Coverage coverage : getCoverages(id)){
+            total += coverage.getCoverageAmount();
+        }
+
+        return total;
+    }
+
+    @Override
     public List<Coverage> getUsedCoverages(String policyId){
         List<UsedCoverageOfPolicy> usedCoverageOfPolicy = usedCoverageOfPolicyDb.findByPolicyId(policyId);
         List<Coverage> coverages = new ArrayList<>();

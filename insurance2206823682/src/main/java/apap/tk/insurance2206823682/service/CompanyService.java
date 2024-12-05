@@ -11,4 +11,5 @@ public interface CompanyService {
     Company getCompanyById(UUID id);
     List<Coverage> getCoverages(UUID id);
     List<Coverage> getUsedCoverages(String policyId);
+    Long getTotalCoverage(UUID id);
 }

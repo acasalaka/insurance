@@ -20,6 +20,7 @@ import apap.tk.insurance2206823682.restdto.request.UpdatePolicyExpiryDateRequest
 import apap.tk.insurance2206823682.restdto.response.BaseResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.CoverageResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.PolicyResponseDTO;
+import apap.tk.insurance2206823682.restdto.response.UserResponseDTO;
 import apap.tk.insurance2206823682.restservice.PolicyRestService;
 import jakarta.validation.Valid;
 
@@ -35,6 +36,30 @@ public class PolicyRestController {
 
     @Autowired
     private PolicyRestService policyRestService;
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createPolicy(@RequestBody AddPolicyRequestRestDTO policyDTO) {
+        var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
+
+        try {
+            PolicyResponseDTO newPolicy = policyRestService.createPolicy(policyDTO.getCompanyId(), policyDTO.getPatientId(), policyDTO.getExpiryDate());
+
+            if (newPolicy == null){
+                throw new Exception("Policy tidak dapat dibuat. Patient class tidak cukup");
+            }
+
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(newPolicy);
+            baseResponseDTO.setMessage("Berhasil membuat Policy baru");
+            baseResponseDTO.setTimestamp(new Date());
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            baseResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+            baseResponseDTO.setMessage(e.getMessage());
+            baseResponseDTO.setTimestamp(new Date());
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping("/admin/all")
     public ResponseEntity<?> getAllPolicy(
@@ -247,8 +272,9 @@ public class PolicyRestController {
                 baseResponseDTO.setTimestamp(new Date());
             }
 
-            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRangeAndStatusPatient(minTotalCoverage,
-                    maxTotalCoverage, UUID.fromString(id),statusInt);
+            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRangeAndStatusPatient(
+                    minTotalCoverage,
+                    maxTotalCoverage, UUID.fromString(id), statusInt);
 
             baseResponseDTO.setStatus(HttpStatus.OK.value());
             baseResponseDTO.setData(listPolicy);
@@ -522,5 +548,5 @@ public class PolicyRestController {
 
         return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
-    
+
 }

@@ -1,8 +1,10 @@
 package apap.tk.insurance2206823682.restservice;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import apap.tk.insurance2206823682.model.Coverage;
 import apap.tk.insurance2206823682.restdto.request.UpdatePolicyExpiryDateRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.response.CoverageResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.PolicyResponseDTO;
@@ -24,6 +26,6 @@ public interface PolicyRestService {
     List<PolicyResponseDTO> getPolicyListByRangeAndStatus(long min, long max, int status);
     List<PolicyResponseDTO> getPolicyListByRangeAndStatusPatient(long min, long max, UUID id, int status);
     List<CoverageResponseDTO> getUsedCoverages(String id);
-
+    PolicyResponseDTO createPolicy(UUID companyId, UUID patientId, Date expiryDate);
 }
 

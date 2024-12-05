@@ -58,8 +58,8 @@ public class Insurance2206823682Application {
                 List<Coverage> listCoverageCompany = new ArrayList<>();
                 listCoverageCompany.add(coverageService.getById(1L));
                 listCoverageCompany.add(coverageService.getById(2L));
-                listCoverageCompany.add(coverageService.getById(3L));
-                listCoverageCompany.add(coverageService.getById(5L));
+                // listCoverageCompany.add(coverageService.getById(3L));
+                // listCoverageCompany.add(coverageService.getById(5L));
 
                 company.setListCoverageCompany(listCoverageCompany);
 
