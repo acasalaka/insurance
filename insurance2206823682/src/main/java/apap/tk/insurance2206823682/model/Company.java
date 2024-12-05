@@ -35,7 +35,15 @@ public class Company {
     private String email;
 
     private String address;
-    
+
+    @ManyToMany
+    @JoinTable(
+        name = "company_coverage",  // Name of the join table
+        joinColumns = @JoinColumn(name = "company_id"),  // Foreign key for the Policy
+        inverseJoinColumns = @JoinColumn(name = "coverage_id")  // Foreign key for the Coverage
+    )
+    private List<Coverage> listCoverageCompany;
+
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;

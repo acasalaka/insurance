@@ -16,7 +16,7 @@ spring:
       ddl-auto: create
 server:
   port: 8081
-insurance2206823682:
-    app:
-        jwtSecret: "YhEwGneRYubPRrqHmZQVeRrsGZPbbNwFndF"
-        jwtExpirationMs: 86400000
+# insurance2206823682:
+#     app:
+#         jwtSecret: "YhEwGneRYubPRrqHmZQVeRrsGZPbbNwFndF"
+#         jwtExpirationMs: 86400000

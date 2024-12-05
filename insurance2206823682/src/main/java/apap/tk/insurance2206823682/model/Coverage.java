@@ -40,4 +40,8 @@ public class Coverage {
 
     @ManyToMany(mappedBy = "listCoverage")
     private List<Policy> policies;
+
+
+    @ManyToMany(mappedBy = "listCoverageCompany")
+    private List<Company> companies;
 }

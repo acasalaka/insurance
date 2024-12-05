@@ -23,6 +23,7 @@ import apap.tk.insurance2206823682.restdto.request.UpdatePolicyExpiryDateRequest
 import apap.tk.insurance2206823682.restdto.response.CompanyResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.CoverageResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.PolicyResponseDTO;
+import apap.tk.insurance2206823682.service.CompanyService;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,7 +34,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
     private PolicyDb policyDb;
 
     @Autowired
-    private UsedCoverageOfPolicyDb usedCoverageOfPolicyDb;
+    private CompanyService companyService;
 
     @Override
     public List<PolicyResponseDTO> getAllPolicy() {
@@ -76,12 +77,29 @@ public class PolicyRestServiceImpl implements PolicyRestService {
     }
 
     @Override
+    public List<PolicyResponseDTO> getPolicyListByRangeAndStatus(long min, long max, int status) {
+        List<Policy> policyList = policyDb.findByStatusAndTotalCoverageBetweenAndIsDeletedFalse(status ,min, max);
+        return policyList.stream()
+                .map(this::convertToPolicyResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<PolicyResponseDTO> getPolicyListByRangePatient(long min, long max, UUID id) {
         List<Policy> policyList = policyDb.findByPatientIdAndTotalCoverageBetweenAndIsDeletedFalse(id, min, max);
         return policyList.stream()
                 .map(this::convertToPolicyResponseDTO)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<PolicyResponseDTO> getPolicyListByRangeAndStatusPatient(long min, long max, UUID id, int status) {
+        List<Policy> policyList = policyDb.findByPatientIdAndStatusAndTotalCoverageBetweenAndIsDeletedFalse(id, status, min, max);
+        return policyList.stream()
+                .map(this::convertToPolicyResponseDTO)
+                .collect(Collectors.toList());
+    }
+    
 
     @Override
     public PolicyResponseDTO getPolicyById(String id) {
@@ -136,6 +154,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
         //         }
         //     }
         // }
+        updateAllStatusPolicy();
 
         var updatedPolicy = policyDb.save(policy);
         return convertToPolicyResponseDTO(updatedPolicy);
@@ -204,24 +223,26 @@ public class PolicyRestServiceImpl implements PolicyRestService {
 
     @Override
     public List<PolicyResponseDTO> getPoliciesByTreatments(List<Long> idTreatments){
-        List<Policy> policies = policyDb.findByCoverageIds(idTreatments);
+    
+        List<Policy> policies = policyDb.findAll();
         List<Policy> fixedPolicies = new ArrayList<Policy>();
-        List<UsedCoverageOfPolicy> usedCoverageOfPolicies = usedCoverageOfPolicyDb.findAll();
-        
+
         for (Policy policy : policies){
-            for (Coverage coverage : policy.getListCoverage()){
-                boolean isAdded = true;
-                for (UsedCoverageOfPolicy usedCoverageOfPolicy : usedCoverageOfPolicies){
-                    if (coverage.getId() == usedCoverageOfPolicy.getCoverageId()){
-                        isAdded = false;
+            boolean isAdded = false;
+            for (Coverage coverage :  companyService.getCoverages(policy.getCompanyId())){
+                for (Long id : idTreatments){
+                    if (id == coverage.getId()){
+                        fixedPolicies.add(policy);
+                        isAdded = true;
+                        break;
                     }
                 }
                 if (isAdded == true){
-                    fixedPolicies.add(policy);
                     break;
                 }
             }
         }
+
         return fixedPolicies.stream()
         .map(this::convertToPolicyResponseDTO)
         .collect(Collectors.toList());
@@ -231,6 +252,7 @@ public class PolicyRestServiceImpl implements PolicyRestService {
         var policyResponseDTO = new PolicyResponseDTO();
         policyResponseDTO.setId(policy.getId());
         policyResponseDTO.setCompanyId(policy.getCompanyId());
+        policyResponseDTO.setCompanyName(companyService.getCompanyById(policy.getCompanyId()).getName());
         policyResponseDTO.setPatientId(policy.getPatientId());
 
         String status;
@@ -257,5 +279,26 @@ public class PolicyRestServiceImpl implements PolicyRestService {
         policyResponseDTO.setDeleted(policy.isDeleted());
 
         return policyResponseDTO;
+    }
+
+    @Override
+    public List<CoverageResponseDTO> getUsedCoverages(String id){
+        List<Coverage> coverages = companyService.getUsedCoverages(id);
+
+        return coverages.stream()
+        .map(this::convertToCoverageResponseDTO)
+        .collect(Collectors.toList());
+
+    }
+
+    public CoverageResponseDTO convertToCoverageResponseDTO(Coverage coverage) {
+        var dto = new CoverageResponseDTO();
+        dto.setId(coverage.getId());
+        dto.setName(coverage.getName());
+        dto.setCoverageAmount(coverage.getCoverageAmount());
+        dto.setCreatedAt(coverage.getCreatedAt());
+        dto.setUpdatedAt(coverage.getUpdatedAt());
+        
+        return dto;
     }
 }

@@ -54,4 +54,5 @@ public interface CoverageDb extends JpaRepository<Coverage, Long> {
             "(34, 'C-section', 12000000, NOW(), NOW())", 
             nativeQuery = true)
     void insertCoverages();
+    
 }

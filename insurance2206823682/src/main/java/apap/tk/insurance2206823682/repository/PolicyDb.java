@@ -52,4 +52,8 @@ public interface PolicyDb extends JpaRepository<Policy, Long> {
             "WHERE c.id IN :coverageIds " +
             "AND p.isDeleted = false")
     List<Policy> findByCoverageIds(List<Long> coverageIds);
+
+    List<Policy> findByPatientIdAndStatusAndTotalCoverageBetweenAndIsDeletedFalse(UUID patientId, Integer status, Long minCoverage, Long maxCoverage);
+
+    List<Policy> findByStatusAndTotalCoverageBetweenAndIsDeletedFalse(Integer status, Long minCoverage, Long maxCoverage);
 }

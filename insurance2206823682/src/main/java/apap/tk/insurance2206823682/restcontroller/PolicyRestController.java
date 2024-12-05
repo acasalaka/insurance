@@ -18,6 +18,7 @@ import apap.tk.insurance2206823682.restdto.request.AddPolicyRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.request.ListPolicyWithListTreatmentRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.request.UpdatePolicyExpiryDateRequestRestDTO;
 import apap.tk.insurance2206823682.restdto.response.BaseResponseDTO;
+import apap.tk.insurance2206823682.restdto.response.CoverageResponseDTO;
 import apap.tk.insurance2206823682.restdto.response.PolicyResponseDTO;
 import apap.tk.insurance2206823682.restservice.PolicyRestService;
 import jakarta.validation.Valid;
@@ -36,37 +37,232 @@ public class PolicyRestController {
     private PolicyRestService policyRestService;
 
     @GetMapping("/admin/all")
-    public ResponseEntity<?> getAllPolicy() {
-        var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
-        List<PolicyResponseDTO> listPolicy = policyRestService.getAllPolicy();
+    public ResponseEntity<?> getAllPolicy(
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "min", required = false) String min,
+            @RequestParam(value = "max", required = false) String max) {
 
-        baseResponseDTO.setStatus(HttpStatus.OK.value());
-        baseResponseDTO.setData(listPolicy);
-        baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
-        baseResponseDTO.setTimestamp(new Date());
+        if (status == null && (min == null || min.equals("")) && (max == null || max.equals(""))) {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+            List<PolicyResponseDTO> listPolicy = policyRestService.getAllPolicy();
 
-        return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
+            baseResponseDTO.setTimestamp(new Date());
+
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
+
+        if ((min == null || min.equals("")) && (max == null || max.equals(""))) {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+            int statusInt;
+
+            if (status.equalsIgnoreCase("Created")) {
+                statusInt = 0;
+            } else if (status.equalsIgnoreCase("Partially Claimed")) {
+                statusInt = 1;
+            } else if (status.equalsIgnoreCase("Fully Claimed")) {
+                statusInt = 2;
+            } else if (status.equalsIgnoreCase("Expired")) {
+                statusInt = 3;
+            } else {
+                statusInt = 4; // Default to "Cancelled" or any other case
+            }
+
+            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByStatusAdmin(statusInt);
+
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
+            baseResponseDTO.setTimestamp(new Date());
+
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
+
+        if (status == null && !min.equals("") && !min.equals("")) {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+
+            long minTotalCoverage = 0;
+            long maxTotalCoverage = 0;
+
+            try {
+                minTotalCoverage = Long.parseLong(min);
+                maxTotalCoverage = Long.parseLong(max);
+            } catch (NumberFormatException e) {
+                baseResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+                baseResponseDTO.setMessage(e.getMessage());
+                baseResponseDTO.setTimestamp(new Date());
+            }
+
+            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRange(minTotalCoverage,
+                    maxTotalCoverage);
+
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
+            baseResponseDTO.setTimestamp(new Date());
+
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
+
+        else {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+            int statusInt;
+
+            if (status.equalsIgnoreCase("Created")) {
+                statusInt = 0;
+            } else if (status.equalsIgnoreCase("Partially Claimed")) {
+                statusInt = 1;
+            } else if (status.equalsIgnoreCase("Fully Claimed")) {
+                statusInt = 2;
+            } else if (status.equalsIgnoreCase("Expired")) {
+                statusInt = 3;
+            } else {
+                statusInt = 4; // Default to "Cancelled" or any other case
+            }
+
+            long minTotalCoverage = 0;
+            long maxTotalCoverage = 0;
+
+            try {
+                minTotalCoverage = Long.parseLong(min);
+                maxTotalCoverage = Long.parseLong(max);
+            } catch (NumberFormatException e) {
+                baseResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+                baseResponseDTO.setMessage(e.getMessage());
+                baseResponseDTO.setTimestamp(new Date());
+            }
+
+            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRangeAndStatus(minTotalCoverage,
+                    maxTotalCoverage, statusInt);
+
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
+            baseResponseDTO.setTimestamp(new Date());
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
+
     }
 
     @GetMapping("/patient/all")
-    public ResponseEntity<?> getAllPolicyPatient(@RequestParam("id") String id) {
-        var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
-        List<PolicyResponseDTO> listPolicy = policyRestService.getAllPolicyPatient(UUID.fromString(id));
+    public ResponseEntity<?> getAllPolicyPatient(@RequestParam("id") String id,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "min", required = false) String min,
+            @RequestParam(value = "max", required = false) String max) {
 
-        baseResponseDTO.setStatus(HttpStatus.OK.value());
-        baseResponseDTO.setData(listPolicy);
-        baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
-        baseResponseDTO.setTimestamp(new Date());
+        if (status == null && (min == null || min.equals("")) && (max == null || max.equals(""))) {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+            List<PolicyResponseDTO> listPolicy = policyRestService.getAllPolicyPatient(UUID.fromString(id));
 
-        return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
+            baseResponseDTO.setTimestamp(new Date());
+
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
+
+        if ((min == null || min.equals("")) && (max == null || max.equals(""))) {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+            int statusInt;
+
+            if (status.equalsIgnoreCase("Created")) {
+                statusInt = 0;
+            } else if (status.equalsIgnoreCase("Partially Claimed")) {
+                statusInt = 1;
+            } else if (status.equalsIgnoreCase("Fully Claimed")) {
+                statusInt = 2;
+            } else if (status.equalsIgnoreCase("Expired")) {
+                statusInt = 3;
+            } else {
+                statusInt = 4; // Default to "Cancelled" or any other case
+            }
+
+            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByStatusPatient(statusInt,
+                    UUID.fromString(id));
+
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
+            baseResponseDTO.setTimestamp(new Date());
+
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
+
+        if (status == null && !min.equals("") && !min.equals("")) {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+
+            long minTotalCoverage = 0;
+            long maxTotalCoverage = 0;
+
+            try {
+                minTotalCoverage = Long.parseLong(min);
+                maxTotalCoverage = Long.parseLong(max);
+            } catch (NumberFormatException e) {
+                baseResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+                baseResponseDTO.setMessage(e.getMessage());
+                baseResponseDTO.setTimestamp(new Date());
+            }
+
+            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRangePatient(minTotalCoverage,
+                    maxTotalCoverage, UUID.fromString(id));
+
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(
+                    String.format("List policy dengan total coverage pada rentang %s dan %s berhasil ditemukan", min,
+                            max));
+            baseResponseDTO.setTimestamp(new Date());
+
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
+
+        else {
+            var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
+            int statusInt;
+
+            if (status.equalsIgnoreCase("Created")) {
+                statusInt = 0;
+            } else if (status.equalsIgnoreCase("Partially Claimed")) {
+                statusInt = 1;
+            } else if (status.equalsIgnoreCase("Fully Claimed")) {
+                statusInt = 2;
+            } else if (status.equalsIgnoreCase("Expired")) {
+                statusInt = 3;
+            } else {
+                statusInt = 4; // Default to "Cancelled" or any other case
+            }
+
+            long minTotalCoverage = 0;
+            long maxTotalCoverage = 0;
+
+            try {
+                minTotalCoverage = Long.parseLong(min);
+                maxTotalCoverage = Long.parseLong(max);
+            } catch (NumberFormatException e) {
+                baseResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+                baseResponseDTO.setMessage(e.getMessage());
+                baseResponseDTO.setTimestamp(new Date());
+            }
+
+            List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRangeAndStatusPatient(minTotalCoverage,
+                    maxTotalCoverage, UUID.fromString(id),statusInt);
+
+            baseResponseDTO.setStatus(HttpStatus.OK.value());
+            baseResponseDTO.setData(listPolicy);
+            baseResponseDTO.setMessage(String.format("List policy berhasil ditemukan"));
+            baseResponseDTO.setTimestamp(new Date());
+            return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+        }
     }
 
-    
     @GetMapping("/admin/list-policy")
-    public ResponseEntity<?> getListPolicyByStatus(@RequestParam("status") String status){
+    public ResponseEntity<?> getListPolicyByStatus(@RequestParam("status") String status) {
         var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
         int statusInt;
-        
+
         if (status.equalsIgnoreCase("Created")) {
             statusInt = 0;
         } else if (status.equalsIgnoreCase("Partially Claimed")) {
@@ -90,10 +286,11 @@ public class PolicyRestController {
     }
 
     @GetMapping("/patient/list-policy")
-    public ResponseEntity<?> getListPolicyByStatusPatient(@RequestParam("status") String status, @RequestParam("id") String id){
+    public ResponseEntity<?> getListPolicyByStatusPatient(@RequestParam("status") String status,
+            @RequestParam("id") String id) {
         var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
         int statusInt;
-        
+
         if (status.equalsIgnoreCase("Created")) {
             statusInt = 0;
         } else if (status.equalsIgnoreCase("Partially Claimed")) {
@@ -106,7 +303,8 @@ public class PolicyRestController {
             statusInt = 4; // Default to "Cancelled" or any other case
         }
 
-        List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByStatusPatient(statusInt, UUID.fromString(id));
+        List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByStatusPatient(statusInt,
+                UUID.fromString(id));
 
         baseResponseDTO.setStatus(HttpStatus.OK.value());
         baseResponseDTO.setData(listPolicy);
@@ -117,7 +315,7 @@ public class PolicyRestController {
     }
 
     @GetMapping("/admin/list-policy-by-range")
-    public ResponseEntity<?> getListPolicyByRange(@RequestParam("min") String min, @RequestParam("max") String max){
+    public ResponseEntity<?> getListPolicyByRange(@RequestParam("min") String min, @RequestParam("max") String max) {
         var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
 
         long minTotalCoverage = 0;
@@ -126,7 +324,7 @@ public class PolicyRestController {
         try {
             minTotalCoverage = Long.parseLong(min);
             maxTotalCoverage = Long.parseLong(max);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             baseResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
             baseResponseDTO.setMessage(e.getMessage());
             baseResponseDTO.setTimestamp(new Date());
@@ -136,14 +334,16 @@ public class PolicyRestController {
 
         baseResponseDTO.setStatus(HttpStatus.OK.value());
         baseResponseDTO.setData(listPolicy);
-        baseResponseDTO.setMessage(String.format("List policy dengan total coverage pada rentang %s dan %s berhasil ditemukan", min, max));
+        baseResponseDTO.setMessage(
+                String.format("List policy dengan total coverage pada rentang %s dan %s berhasil ditemukan", min, max));
         baseResponseDTO.setTimestamp(new Date());
 
         return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
 
     @GetMapping("/patient/list-policy-by-range")
-    public ResponseEntity<?> getListPolicyByRange(@RequestParam("min") String min, @RequestParam("max") String max, @RequestParam("id") UUID id){
+    public ResponseEntity<?> getListPolicyByRange(@RequestParam("min") String min, @RequestParam("max") String max,
+            @RequestParam("id") UUID id) {
         var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
 
         long minTotalCoverage = 0;
@@ -152,24 +352,26 @@ public class PolicyRestController {
         try {
             minTotalCoverage = Long.parseLong(min);
             maxTotalCoverage = Long.parseLong(max);
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             baseResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
             baseResponseDTO.setMessage(e.getMessage());
             baseResponseDTO.setTimestamp(new Date());
         }
 
-        List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRangePatient(minTotalCoverage, maxTotalCoverage, id);
+        List<PolicyResponseDTO> listPolicy = policyRestService.getPolicyListByRangePatient(minTotalCoverage,
+                maxTotalCoverage, id);
 
         baseResponseDTO.setStatus(HttpStatus.OK.value());
         baseResponseDTO.setData(listPolicy);
-        baseResponseDTO.setMessage(String.format("List policy dengan total coverage pada rentang %s dan %s berhasil ditemukan", min, max));
+        baseResponseDTO.setMessage(
+                String.format("List policy dengan total coverage pada rentang %s dan %s berhasil ditemukan", min, max));
         baseResponseDTO.setTimestamp(new Date());
 
         return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/admin/detail")
-    public ResponseEntity<?> getPolicyById(@RequestParam("id") String id){
+    @GetMapping("/detail")
+    public ResponseEntity<?> getPolicyById(@RequestParam("id") String id) {
         var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
 
         PolicyResponseDTO policy = policyRestService.getPolicyById(id);
@@ -190,7 +392,7 @@ public class PolicyRestController {
     }
 
     @GetMapping("/patient/detail")
-    public ResponseEntity<?> getPolicyById(@RequestParam("id") String id, @RequestParam("id") String idPatient){
+    public ResponseEntity<?> getPolicyById(@RequestParam("id") String id, @RequestParam("id") String idPatient) {
         var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
 
         PolicyResponseDTO policy = policyRestService.getPolicyByIdAndIdPatient(id, idPatient);
@@ -211,7 +413,8 @@ public class PolicyRestController {
     }
 
     @PutMapping("/update-expirydate")
-    public ResponseEntity<?> updateExpiryDatePolicy(@Valid @RequestBody UpdatePolicyExpiryDateRequestRestDTO policyDTO){
+    public ResponseEntity<?> updateExpiryDatePolicy(
+            @Valid @RequestBody UpdatePolicyExpiryDateRequestRestDTO policyDTO) {
         var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
 
         PolicyResponseDTO policy = policyRestService.updatePolicyExpiryDate(policyDTO);
@@ -225,14 +428,15 @@ public class PolicyRestController {
 
         baseResponseDTO.setStatus(HttpStatus.OK.value());
         baseResponseDTO.setData(policy);
-        baseResponseDTO.setMessage(String.format("Expiry Date Policy dengan ID %s berhasil diperbarui", policy.getId()));
+        baseResponseDTO
+                .setMessage(String.format("Expiry Date Policy dengan ID %s berhasil diperbarui", policy.getId()));
         baseResponseDTO.setTimestamp(new Date());
 
         return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
 
     @PutMapping("/update-status")
-    public ResponseEntity<?> updateStatusPolicy(){
+    public ResponseEntity<?> updateStatusPolicy() {
         var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
 
         List<PolicyResponseDTO> listPolicy = policyRestService.updateAllStatusPolicy();
@@ -246,16 +450,16 @@ public class PolicyRestController {
     }
 
     @PutMapping("/cancel")
-    public ResponseEntity<?> cancelPolicy(@RequestParam("id") String id){
+    public ResponseEntity<?> cancelPolicy(@RequestParam("id") String id) {
         var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
         PolicyResponseDTO policy = policyRestService.cancelStatusPolicy(id);
 
-        if (policy == null){
+        if (policy == null) {
             baseResponseDTO.setStatus(HttpStatus.NOT_FOUND.value());
             baseResponseDTO.setMessage(String.format("Data policy tidak ditemukan"));
             baseResponseDTO.setTimestamp(new Date());
             return new ResponseEntity<>(baseResponseDTO, HttpStatus.NOT_FOUND);
-        } else if (!policy.getStatus().equalsIgnoreCase("Created") || policy.isDeleted() == true){
+        } else if (!policy.getStatus().equalsIgnoreCase("Created") || policy.isDeleted() == true) {
             baseResponseDTO.setStatus(HttpStatus.OK.value());
             baseResponseDTO.setMessage(String.format("Data policy tidak dapat dicancel"));
             baseResponseDTO.setTimestamp(new Date());
@@ -269,17 +473,17 @@ public class PolicyRestController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deletePolicy(@RequestParam("id") String id){
+    public ResponseEntity<?> deletePolicy(@RequestParam("id") String id) {
         var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
 
         PolicyResponseDTO policy = policyRestService.deletePolicy(id);
 
-        if (policy == null){
+        if (policy == null) {
             baseResponseDTO.setStatus(HttpStatus.NOT_FOUND.value());
             baseResponseDTO.setMessage(String.format("Data policy tidak ditemukan"));
             baseResponseDTO.setTimestamp(new Date());
             return new ResponseEntity<>(baseResponseDTO, HttpStatus.NOT_FOUND);
-        } else if (!policy.getStatus().equalsIgnoreCase("Created")){
+        } else if (!policy.getStatus().equalsIgnoreCase("Created")) {
             baseResponseDTO.setStatus(HttpStatus.OK.value());
             baseResponseDTO.setMessage(String.format("Data policy tidak dapat dihapus"));
             baseResponseDTO.setTimestamp(new Date());
@@ -291,9 +495,10 @@ public class PolicyRestController {
             return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
         }
     }
-    
-    @GetMapping("/policy-list-by-treatment")
-    public ResponseEntity<?> getPolicyListByTreatment(@Valid @RequestBody ListPolicyWithListTreatmentRequestRestDTO policyDTO){
+
+    @PostMapping("/policy-list-by-treatment")
+    public ResponseEntity<?> getPolicyListByTreatment(
+            @RequestBody ListPolicyWithListTreatmentRequestRestDTO policyDTO) {
         var baseResponseDTO = new BaseResponseDTO<List<PolicyResponseDTO>>();
 
         List<PolicyResponseDTO> listPolicies = policyRestService.getPoliciesByTreatments(policyDTO.getIdsTreatments());
@@ -303,4 +508,19 @@ public class PolicyRestController {
         baseResponseDTO.setData(listPolicies);
         return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
     }
+
+    @GetMapping("/get_used_coverages")
+    public ResponseEntity<?> getListUsedCoverage(@RequestParam("policyId") String policyId) {
+        var baseResponseDTO = new BaseResponseDTO<List<CoverageResponseDTO>>();
+
+        List<CoverageResponseDTO> listCoverages = policyRestService.getUsedCoverages(policyId);
+
+        baseResponseDTO.setStatus(HttpStatus.OK.value());
+        baseResponseDTO.setData(listCoverages);
+        baseResponseDTO.setMessage(String.format("List used coverage dari policy berhasil ditemukan"));
+        baseResponseDTO.setTimestamp(new Date());
+
+        return new ResponseEntity<>(baseResponseDTO, HttpStatus.OK);
+    }
+    
 }

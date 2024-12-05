@@ -18,6 +18,7 @@ public class PolicyResponseDTO {
     private String id;
 
     private UUID companyId;
+    private String companyName;
 
     private UUID patientId;
         

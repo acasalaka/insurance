@@ -1,7 +1,9 @@
 package apap.tk.insurance2206823682;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import com.github.javafaker.Faker;
 
 import apap.tk.insurance2206823682.model.Company;
+import apap.tk.insurance2206823682.model.Coverage;
 import apap.tk.insurance2206823682.model.Policy;
 import apap.tk.insurance2206823682.restservice.PolicyRestService;
 import apap.tk.insurance2206823682.service.CompanyService;
@@ -52,15 +55,25 @@ public class Insurance2206823682Application {
                 company.setEmail("fakedeveloper@test.com");
                 company.setAddress(faker.address().fullAddress());
                 company.setCreatedAt(new Date());
+                List<Coverage> listCoverageCompany = new ArrayList<>();
+                listCoverageCompany.add(coverageService.getById(1L));
+                listCoverageCompany.add(coverageService.getById(2L));
+                listCoverageCompany.add(coverageService.getById(3L));
+                listCoverageCompany.add(coverageService.getById(5L));
+
+                company.setListCoverageCompany(listCoverageCompany);
+
                 companyService.addCompany(company);
-    
+
                 // Create a policy with randomized status and set fields based on status
                 Policy policy = new Policy();
                 policy.setId(policyService.createId(faker.name().fullName(), company.getName()));
                 policy.setCompanyId(company.getId());
                 policy.setPatientId(UUID.randomUUID());
     
-                int status = faker.number().numberBetween(0, 5); // Randomized status between 0 and 4
+                // int status = faker.number().numberBetween(0, 5); // Randomized status between 0 and 4
+                int status = 0; // Randomized status between 0 and 4
+
                 policy.setStatus(status);
     
                 int totalCoverage = faker.number().numberBetween(1, 1000000); // Random total coverage
