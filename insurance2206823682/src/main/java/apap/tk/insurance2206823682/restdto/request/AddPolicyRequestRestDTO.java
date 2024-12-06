@@ -1,6 +1,6 @@
 package apap.tk.insurance2206823682.restdto.request;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +26,7 @@ public class AddPolicyRequestRestDTO {
     // @Column(nullable = false)
     private UUID patientId;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")  // Ensures date is parsed correctly
     private Date expiryDate;
 }
 

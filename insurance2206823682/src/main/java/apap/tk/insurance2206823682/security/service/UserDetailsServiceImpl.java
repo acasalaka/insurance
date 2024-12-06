@@ -48,7 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             password = endUserResponseDTO.getPassword();
             System.out.println(endUserResponseDTO.getPassword());
             System.out.println(endUserResponseDTO.getUsername());
-            role = endUserResponseDTO.getRole();
+            role = endUserResponseDTO.getRole().toUpperCase();
 
             return createUserDetails(email, password, role);
         }

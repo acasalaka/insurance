@@ -418,7 +418,7 @@ public class PolicyRestController {
     }
 
     @GetMapping("/patient/detail")
-    public ResponseEntity<?> getPolicyById(@RequestParam("id") String id, @RequestParam("id") String idPatient) {
+    public ResponseEntity<?> getPolicyById(@RequestParam("id") String id, @RequestParam("idPatient") String idPatient) {
         var baseResponseDTO = new BaseResponseDTO<PolicyResponseDTO>();
 
         PolicyResponseDTO policy = policyRestService.getPolicyByIdAndIdPatient(id, idPatient);
@@ -485,7 +485,7 @@ public class PolicyRestController {
             baseResponseDTO.setMessage(String.format("Data policy tidak ditemukan"));
             baseResponseDTO.setTimestamp(new Date());
             return new ResponseEntity<>(baseResponseDTO, HttpStatus.NOT_FOUND);
-        } else if (!policy.getStatus().equalsIgnoreCase("Created") || policy.isDeleted() == true) {
+        } else if (policy.getStatus().equalsIgnoreCase("Created") || policy.isDeleted() == true) {
             baseResponseDTO.setStatus(HttpStatus.OK.value());
             baseResponseDTO.setMessage(String.format("Data policy tidak dapat dicancel"));
             baseResponseDTO.setTimestamp(new Date());

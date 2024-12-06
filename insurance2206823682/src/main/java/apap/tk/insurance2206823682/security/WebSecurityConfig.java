@@ -25,7 +25,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import apap.tk.insurance2206823682.security.jwt.JwtTokenFilter;
 
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -43,18 +42,19 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("api/appointment/all").hasAnyAuthority("Admin", "Nurse")
-                        .requestMatchers("api/appointment/detail/**")
-                        .hasAnyAuthority("Admin", "Doctor", "Nurse", "Patient")
 
-                        // .requestMatchers("api/appointment/doctor/**").hasAuthority("Doctor")
-                        // .requestMatchers("api/appointment/patient/**").hasAuthority("Patient")
-                        // .requestMatchers("api/appointment/date/**").hasAnyAuthority("Admin", "Doctor", "Nurse")
-                        // .requestMatchers("api/appointment/create").hasAnyAuthority("Admin", "Patient")
-                        // .requestMatchers("api/appointment/update-status").hasAnyAuthority("Admin", "Patient")
-                        // .requestMatchers("api/appointment/update-notes").hasAuthority("Doctor")
-                        // .requestMatchers("api/appointment/**/delete").hasAuthority("Admin")
+                        .requestMatchers("/api/policy/admin/all").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/policy/patient/all").hasAnyAuthority("PATIENT")
+                        .requestMatchers("/api/policy/detail").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/policy/patient/detail").hasAnyAuthority("PATIENT")
+                        .requestMatchers("/api/policy/create").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/policy/update-expirydate").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/policy/cancel").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/policy/update-status").hasAnyAuthority("Admin")
+                        .requestMatchers("/api/policy/delete").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/policy/policy-list-by-treatment").hasAnyAuthority("ADMIN")
                         .anyRequest().authenticated())
+
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e -> e
